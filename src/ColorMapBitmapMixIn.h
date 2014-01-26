@@ -29,6 +29,8 @@ public:
   ColorMapBitmapMixIn(ColorMap *const map);
   virtual ~ColorMapBitmapMixIn();
 
+  ColorMapBitmapMixIn &operator=(const ColorMapBitmapMixIn &obj);
+
   void InitializeBitmapMixIn();
   void FinalizeBitmapMixIn();
 

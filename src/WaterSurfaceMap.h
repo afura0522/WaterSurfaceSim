@@ -30,6 +30,8 @@ public:
   WaterSurfaceMap(int mapwidth, int mapheight, float propagation, float attenuation);
   virtual ~WaterSurfaceMap();
 
+  WaterSurfaceMap &operator=(const WaterSurfaceMap &obj);
+
   virtual void Initialize();
   virtual void Finalize();
 
