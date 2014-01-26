@@ -70,7 +70,6 @@ void ColorMapBitmapMixIn::OutputBitmap(const char *path) {
   bmpInfo.biClrUsed = 0;
   bmpInfo.biClrImportant = 0;
 
-  char *buf = new char[sizeof(BITMAPFILEHEADER)];
   std::ofstream fs(std::string(path), std::ios::binary | std::ios::trunc);
   fs.write(reinterpret_cast<const char *>(&bmpFile), sizeof(BITMAPFILEHEADER));
   fs.write(reinterpret_cast<const char *>(&bmpInfo), sizeof(BITMAPINFOHEADER));
