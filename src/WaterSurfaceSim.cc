@@ -51,6 +51,9 @@ static const int MapWidth = 200;
 static const int MapHeight = 200;
 static const char *BitmapPath = ".\\capture.bmp";
 
+static const float DefaultCharacterColor[] = {0.7f, 0.8f, 0.8f};
+static const float NoticeCharacterColor[] = {1.0f, 0.0f, 0.0f};
+
 static const float DefaultPropagation = 0.2f;
 static const float DefaultAttenuation = 0.99f;
 
@@ -71,6 +74,7 @@ static FPSCounter fpscounter(1000, get_time);
 static WaterSurfaceMap map(MapWidth, MapHeight, DefaultPropagation,
                            DefaultAttenuation);
 static RectangleRainStimulator rain(RainOption, on_stimulate);
+static bool pauseflag = false;
 static bool rainstimulateflag = true;
 
 /**
@@ -94,11 +98,13 @@ static int on_stimulate(int x, int y, float force) {
 void on_timer(int value) {
   UNUSED(value);
 
-  if (rainstimulateflag) {
-    rain.Execute();
+  if (!pauseflag) {
+    if (rainstimulateflag) {
+      rain.Execute();
+    }
+    map.Execute();
+    fpscounter.Update();
   }
-  map.Execute();
-  fpscounter.Update();
 
   glutPostRedisplay();
   glutTimerFunc(1000 / FPS, on_timer, 0);
@@ -126,6 +132,9 @@ void on_keyboard_input(unsigned char key, int x, int y) {
   UNUSED(y);
 
   switch (key) {
+    case 'p':
+      pauseflag = !pauseflag;
+      break;
     case 'c':
       map.ClearAll();
       break;
@@ -141,9 +150,9 @@ void on_keyboard_input(unsigned char key, int x, int y) {
 /**
  * Draw the string at the specified position
  */
-void draw_string(float x, float y, std::string str) {
+void draw_string(float x, float y, const float (&color)[3], std::string str) {
   glDisable (GL_TEXTURE_2D);
-  glColor4f(0.7f, 0.8f, 0.8f, 1.0f);
+  glColor4f(color[0], color[1], color[2], 1.0f);
   glRasterPos3f(x, y, -1.0f);
   const char* p = str.c_str();
   while ('\0' != *p) {
@@ -184,21 +193,28 @@ void on_display(void) {
   std::stringstream ss;
   ss.str("");
   ss << "real fps: " << fpscounter.fps() << " (ideal: " << FPS << ")";
-  draw_string(-0.90f, 0.86f, ss.str());
+  draw_string(-0.92f, 0.86f, DefaultCharacterColor, ss.str());
+  ss.str("");
+  ss << "pause: " << (pauseflag ? "on" : "off");
+  const float (&color)[3] = pauseflag ? NoticeCharacterColor : DefaultCharacterColor;
+  draw_string(-0.92f, 0.78f, color, ss.str());
   ss.str("");
   ss << "rain stimulus: " << (rainstimulateflag ? "on" : "off");
-  draw_string(-0.90f, 0.78f, ss.str());
+  draw_string(-0.92f, 0.70f, DefaultCharacterColor, ss.str());
 
   // Draw the how to interfere
   ss.str("");
-  ss << "c: clear all";
-  draw_string(-0.10f, -0.76f, ss.str());
+  ss << "p: pause";
+  draw_string(0.10f, -0.68f, DefaultCharacterColor, ss.str());
   ss.str("");
-  ss << "r: toggle the rain simulator effectivity";
-  draw_string(-0.10f, -0.84f, ss.str());
+  ss << "c: clear all";
+  draw_string(0.10f, -0.76f, DefaultCharacterColor, ss.str());
+  ss.str("");
+  ss << "r: toggle the rain effectivity";
+  draw_string(0.10f, -0.84f, DefaultCharacterColor, ss.str());
   ss.str("");
   ss << "b: save as bitmap";
-  draw_string(-0.10f, -0.92f, ss.str());
+  draw_string(0.10f, -0.92f, DefaultCharacterColor, ss.str());
 
   // Reflect the screen
   glutSwapBuffers();
