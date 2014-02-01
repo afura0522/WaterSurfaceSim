@@ -34,8 +34,9 @@
 #include <freeglut.h>
 #pragma warning(pop)
 
-#include "WaterSurfaceMap.h"
 #include "FPSCounter.h"
+#include "RainStimulator.h"
+#include "WaterSurfaceMap.h"
 
 #define UNUSED(_var) (void)_var
 
@@ -53,13 +54,38 @@ static const char *BitmapPath = ".\\capture.bmp";
 static const float DefaultPropagation = 0.2f;
 static const float DefaultAttenuation = 0.99f;
 
+static const float RainMinForce = 0.0f;
+static const float RainMaxForce = 25.0f;
+static const float RainFrequency = 0.2f;
+
+static const RectangleRainStimulator::StimulusOption RainOption(MapWidth,
+                                                                MapHeight,
+                                                                RainMinForce,
+                                                                RainMaxForce,
+                                                                RainFrequency);
+
+static int get_time();
+static int on_stimulate(int x, int y, float force);
+
+static FPSCounter fpscounter(1000, get_time);
+static WaterSurfaceMap map(MapWidth, MapHeight, DefaultPropagation,
+                           DefaultAttenuation);
+static RectangleRainStimulator rain(RainOption, on_stimulate);
+
+/**
+ * the callback function for FPSCounter
+ */
 static int get_time() {
   return glutGet(GLUT_ELAPSED_TIME);
 }
 
-static WaterSurfaceMap map(MapWidth, MapHeight, DefaultPropagation,
-                           DefaultAttenuation);
-static FPSCounter fpscounter(1000, get_time);
+/**
+ * the callback function for RainStimulator
+ */
+static int on_stimulate(int x, int y, float force) {
+  map.Set(x, y, force);
+  return 0;
+}
 
 /**
  * The callback function called every fixed time
@@ -67,8 +93,10 @@ static FPSCounter fpscounter(1000, get_time);
 void on_timer(int value) {
   UNUSED(value);
 
+  rain.Execute();
   map.Execute();
   fpscounter.Update();
+
   glutPostRedisplay();
   glutTimerFunc(1000 / FPS, on_timer, 0);
 }

@@ -21,9 +21,37 @@
 
 #include "RainStimulator.h"
 
-RainStimulator::RainStimulator() {
+#include <cstdlib>
+
+RectangleRainStimulator::RectangleRainStimulator(
+    const StimulusOption &option, int onstimulate(int, int, float))
+    : option_(option),
+      onstimulate_(onstimulate) {
 }
 
-RainStimulator::~RainStimulator() {
+RectangleRainStimulator::~RectangleRainStimulator() {
 }
 
+int RectangleRainStimulator::Execute() {
+  // TODO: improve to get the random value
+  float frequency = option_.frequency;
+  while (frequency > 0.0f) {
+    if (option_.frequency < 1.0f) {
+      if (rand() % 100 >= static_cast<int>(frequency * 100)) {
+        break;
+      }
+    }
+    // TODO: do not stimulate the same point
+    int x = rand() % option_.areawidth;
+    int y = rand() % option_.areaheight;
+    float force = option_.minforce
+        + (option_.maxforce - option_.minforce) * ((float) rand() / RAND_MAX);
+    if (0 > onstimulate_(x, y, force)) {
+      // TODO: it is OK that to return as soon as onstimulate_() failed
+      return -1;
+    }
+    frequency -= 1.0f;
+  }
+
+  return 0;
+}

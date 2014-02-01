@@ -21,6 +21,9 @@
     <ClCompile Include="..\src\WaterSurfaceSim.cc">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\RainStimulator.cc">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\WaterSurfaceMap.h">
@@ -33,6 +36,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\src\FPSCounter.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\RainStimulator.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

@@ -22,6 +22,7 @@
     <ClCompile Include="..\src\ColorMap.cc" />
     <ClCompile Include="..\src\ColorMapBitmapMixIn.cc" />
     <ClCompile Include="..\src\FPSCounter.cc" />
+    <ClCompile Include="..\src\RainStimulator.cc" />
     <ClCompile Include="..\src\WaterSurfaceMap.cc" />
     <ClCompile Include="..\src\WaterSurfaceSim.cc" />
   </ItemGroup>
@@ -29,6 +30,7 @@
     <ClInclude Include="..\src\ColorMap.h" />
     <ClInclude Include="..\src\ColorMapBitmapMixIn.h" />
     <ClInclude Include="..\src\FPSCounter.h" />
+    <ClInclude Include="..\src\RainStimulator.h" />
     <ClInclude Include="..\src\WaterSurfaceMap.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
