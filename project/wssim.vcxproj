@@ -21,12 +21,14 @@
   <ItemGroup>
     <ClCompile Include="..\src\ColorMap.cpp" />
     <ClCompile Include="..\src\ColorMapBitmapMixIn.cpp" />
+    <ClCompile Include="..\src\FPSCounter.cc" />
     <ClCompile Include="..\src\WaterSurfaceMap.cpp" />
     <ClCompile Include="..\src\WaterSurfaceSim.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\ColorMap.h" />
     <ClInclude Include="..\src\ColorMapBitmapMixIn.h" />
+    <ClInclude Include="..\src\FPSCounter.h" />
     <ClInclude Include="..\src\WaterSurfaceMap.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

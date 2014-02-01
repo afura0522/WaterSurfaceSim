@@ -35,6 +35,7 @@
 #pragma warning(pop)
 
 #include "WaterSurfaceMap.h"
+#include "FPSCounter.h"
 
 #define UNUSED(_var) (void)_var
 
@@ -52,9 +53,13 @@ static const char *BitmapPath = ".\\capture.bmp";
 static const float DefaultPropagation = 0.2f;
 static const float DefaultAttenuation = 0.99f;
 
+static int get_time() {
+  return glutGet(GLUT_ELAPSED_TIME);
+}
+
 static WaterSurfaceMap map(MapWidth, MapHeight, DefaultPropagation,
                            DefaultAttenuation);
-static int tickCount = 0;
+static FPSCounter fpscounter(1000, get_time);
 
 /**
  * The callback function called every fixed time
@@ -63,10 +68,9 @@ void on_timer(int value) {
   UNUSED(value);
 
   map.Execute();
+  fpscounter.Update();
   glutPostRedisplay();
   glutTimerFunc(1000 / FPS, on_timer, 0);
-
-  ++tickCount;
 }
 
 /**
@@ -103,7 +107,7 @@ void on_keyboard_input(unsigned char key, int x, int y) {
 /**
  * Draw the string at the specified position
  */
-void display_string(float x, float y, std::string str) {
+void draw_string(float x, float y, std::string str) {
   glDisable (GL_TEXTURE_2D);
   glColor4f(0.7f, 0.8f, 0.8f, 1.0f);
   glRasterPos3f(x, y, -1.0f);
@@ -141,6 +145,12 @@ void on_display(void) {
   glTexCoord2f(0, 1);
   glVertex2f(1.0f, 1.0f);
   glEnd();
+
+  // Draw the current FPS
+  std::stringstream ss;
+  ss.str("");
+  ss << "real FPS: " << fpscounter.fps() << " (ideal: " << FPS << ")";
+  draw_string(-0.9f, 0.82f, ss.str());
 
   // Reflect the screen
   glutSwapBuffers();

@@ -18,6 +18,9 @@
     <ClCompile Include="..\src\ColorMapBitmapMixIn.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\FPSCounter.cc">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\WaterSurfaceMap.h">
@@ -27,6 +30,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ColorMapBitmapMixIn.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\FPSCounter.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
