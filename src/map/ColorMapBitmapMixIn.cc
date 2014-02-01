@@ -19,10 +19,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "ColorMapBitmapMixIn.h"
+#include "map/ColorMapBitmapMixIn.h"
 
 #include <fstream>
-
 #include <Windows.h>
 
 #include "ColorMap.h"

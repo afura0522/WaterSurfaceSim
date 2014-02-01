@@ -34,9 +34,9 @@
 #include <freeglut.h>
 #pragma warning(pop)
 
-#include "FPSCounter.h"
-#include "RainStimulator.h"
-#include "WaterSurfaceMap.h"
+#include "util/FPSCounter.h"
+#include "stimulator/RainStimulator.h"
+#include "map/WaterSurfaceMap.h"
 
 #define UNUSED(_var) (void)_var
 

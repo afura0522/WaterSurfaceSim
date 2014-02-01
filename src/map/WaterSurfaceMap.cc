@@ -19,7 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "WaterSurfaceMap.h"
+#include "map/WaterSurfaceMap.h"
 
 #include <Windows.h>
 
@@ -121,7 +121,8 @@ void WaterSurfaceMap::Execute() {
       float neighborEffect = (neighborSum / 8.0f) * propagation_;
       float prevEffect = currtexs_[j][i] - prevtexs_[j][i];
 
-      nexttexs_[j][i] = (currtexs_[j][i] + neighborEffect + prevEffect) * attenuation_;
+      nexttexs_[j][i] = (currtexs_[j][i] + neighborEffect + prevEffect)
+          * attenuation_;
     }
   }
 

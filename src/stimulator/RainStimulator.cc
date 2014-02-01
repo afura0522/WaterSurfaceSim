@@ -19,14 +19,39 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "ColorMap.h"
+#include "stimulator/RainStimulator.h"
 
-const int ColorMap::ColorNum = 3;
+#include <cstdlib>
 
-ColorMap::ColorMap(int width, int height)
-    : width_(width),
-      height_(height) {
+RectangleRainStimulator::RectangleRainStimulator(
+    const StimulusOption &option, int onstimulate(int, int, float))
+    : option_(option),
+      onstimulate_(onstimulate) {
 }
 
-ColorMap::~ColorMap() {
+RectangleRainStimulator::~RectangleRainStimulator() {
+}
+
+int RectangleRainStimulator::Execute() {
+  // TODO: improve to get the random value
+  float frequency = option_.frequency;
+  while (frequency > 0.0f) {
+    if (option_.frequency < 1.0f) {
+      if (rand() % 100 >= static_cast<int>(frequency * 100)) {
+        break;
+      }
+    }
+    // TODO: do not stimulate the same point
+    int x = rand() % option_.areawidth;
+    int y = rand() % option_.areaheight;
+    float force = option_.minforce
+        + (option_.maxforce - option_.minforce) * ((float) rand() / RAND_MAX);
+    if (0 > onstimulate_(x, y, force)) {
+      // TODO: it is OK that to return as soon as onstimulate_() failed
+      return -1;
+    }
+    frequency -= 1.0f;
+  }
+
+  return 0;
 }

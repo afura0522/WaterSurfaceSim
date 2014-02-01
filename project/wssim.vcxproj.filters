@@ -4,42 +4,51 @@
     <Filter Include="src">
       <UniqueIdentifier>{02f0a100-9eeb-4246-a8eb-fa004ddac740}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\map">
+      <UniqueIdentifier>{5d735d09-3734-4bfa-921a-7b11168be8e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\stimulator">
+      <UniqueIdentifier>{ca31f6c0-86ab-44ac-8e5c-982ff326bb88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{5c2a6124-d1a9-4552-a6e2-6aa2807e2257}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\FPSCounter.cc">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ColorMap.cc">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ColorMapBitmapMixIn.cc">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\WaterSurfaceMap.cc">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\WaterSurfaceSim.cc">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\RainStimulator.cc">
-      <Filter>src</Filter>
+    <ClCompile Include="..\src\util\FPSCounter.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\stimulator\RainStimulator.cc">
+      <Filter>src\stimulator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\map\ColorMap.cc">
+      <Filter>src\map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\map\ColorMapBitmapMixIn.cc">
+      <Filter>src\map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\map\WaterSurfaceMap.cc">
+      <Filter>src\map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\WaterSurfaceMap.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\src\util\FPSCounter.h">
+      <Filter>src\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ColorMap.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\src\stimulator\RainStimulator.h">
+      <Filter>src\stimulator</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ColorMapBitmapMixIn.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\src\map\ColorMap.h">
+      <Filter>src\map</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\FPSCounter.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\src\map\ColorMapBitmapMixIn.h">
+      <Filter>src\map</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\RainStimulator.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\src\map\WaterSurfaceMap.h">
+      <Filter>src\map</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
