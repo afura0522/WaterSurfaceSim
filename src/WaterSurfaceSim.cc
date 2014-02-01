@@ -71,6 +71,7 @@ static FPSCounter fpscounter(1000, get_time);
 static WaterSurfaceMap map(MapWidth, MapHeight, DefaultPropagation,
                            DefaultAttenuation);
 static RectangleRainStimulator rain(RainOption, on_stimulate);
+static bool rainstimulateflag = true;
 
 /**
  * the callback function for FPSCounter
@@ -93,7 +94,9 @@ static int on_stimulate(int x, int y, float force) {
 void on_timer(int value) {
   UNUSED(value);
 
-  rain.Execute();
+  if (rainstimulateflag) {
+    rain.Execute();
+  }
   map.Execute();
   fpscounter.Update();
 
@@ -123,8 +126,11 @@ void on_keyboard_input(unsigned char key, int x, int y) {
   UNUSED(y);
 
   switch (key) {
-    case 'i':
+    case 'c':
       map.ClearAll();
+      break;
+    case 'r':
+      rainstimulateflag = !rainstimulateflag;
       break;
     case 'b':
       map.OutputBitmap(BitmapPath);
@@ -177,8 +183,22 @@ void on_display(void) {
   // Draw the current FPS
   std::stringstream ss;
   ss.str("");
-  ss << "real FPS: " << fpscounter.fps() << " (ideal: " << FPS << ")";
-  draw_string(-0.9f, 0.82f, ss.str());
+  ss << "real fps: " << fpscounter.fps() << " (ideal: " << FPS << ")";
+  draw_string(-0.90f, 0.86f, ss.str());
+  ss.str("");
+  ss << "rain stimulus: " << (rainstimulateflag ? "on" : "off");
+  draw_string(-0.90f, 0.78f, ss.str());
+
+  // Draw the how to interfere
+  ss.str("");
+  ss << "c: clear all";
+  draw_string(-0.10f, -0.76f, ss.str());
+  ss.str("");
+  ss << "r: toggle the rain simulator effectivity";
+  draw_string(-0.10f, -0.84f, ss.str());
+  ss.str("");
+  ss << "b: save as bitmap";
+  draw_string(-0.10f, -0.92f, ss.str());
 
   // Reflect the screen
   glutSwapBuffers();
