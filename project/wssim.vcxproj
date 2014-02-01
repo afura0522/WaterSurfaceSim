@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\ColorMap.cpp" />
-    <ClCompile Include="..\src\ColorMapBitmapMixIn.cpp" />
+    <ClCompile Include="..\src\ColorMap.cc" />
+    <ClCompile Include="..\src\ColorMapBitmapMixIn.cc" />
     <ClCompile Include="..\src\FPSCounter.cc" />
-    <ClCompile Include="..\src\WaterSurfaceMap.cpp" />
-    <ClCompile Include="..\src\WaterSurfaceSim.cpp" />
+    <ClCompile Include="..\src\WaterSurfaceMap.cc" />
+    <ClCompile Include="..\src\WaterSurfaceSim.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\ColorMap.h" />
