@@ -19,9 +19,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// Avoid the warning caused by the GLUT header
-#pragma warning(disable:4505)
-
 // Detect memory leak
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -318,6 +315,9 @@ int main(int argc, char** argv) {
   glutMouseFunc(on_mouse_click);
   glutMotionFunc(on_mouse_draw);
   glutKeyboardFunc(on_keyboard_input);
+
+  // Create the popup menu (to avoid the unused function warning)
+  glutCreateMenu(NULL);
 
   // Clear the screen
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

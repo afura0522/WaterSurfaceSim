@@ -128,6 +128,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
     <PostBuildEvent>
       <Command>(if not exist $(OutputPath) mkdir $(OutputPath)) &amp; copy /Y $(SolutionDir)freeglut\lib\x86\freeglut.dll $(OutputPath)\freeglut.dll</Command>
@@ -146,6 +147,7 @@
     <Link />
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
     <PostBuildEvent>
       <Command>(if not exist $(OutputPath) mkdir $(OutputPath)) &amp; copy /Y $(SolutionDir)freeglut\lib\x64\freeglut.dll $(OutputPath)\freeglut.dll</Command>
@@ -166,6 +168,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
     <PostBuildEvent>
       <Command>(if not exist $(OutputPath) mkdir $(OutputPath)) &amp; copy /Y $(SolutionDir)freeglut\lib\x86\freeglut.dll $(OutputPath)\freeglut.dll</Command>
@@ -178,8 +181,6 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
-      <FloatingPointModel>Fast</FloatingPointModel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(SolutionDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4351</DisableSpecificWarnings>
@@ -188,6 +189,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
     <PostBuildEvent>
       <Command>(if not exist $(OutputPath) mkdir $(OutputPath)) &amp; copy /Y $(SolutionDir)freeglut\lib\x64\freeglut.dll $(OutputPath)\freeglut.dll</Command>
