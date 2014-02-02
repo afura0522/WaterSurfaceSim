@@ -7,12 +7,14 @@
 
 #include <memory>
 
-class RectangleRainStimulator {
+#include "stimulator/Stimulator.h"
+
+class RectangleRainStimulator : public Stimulator {
 public:
   struct StimulusOption {
     // the area to stimulate
-    int areawidth;
-    int areaheight;
+    float areawidth;
+    float areaheight;
     // the area to stimulate
     float minforce;
     float maxforce;
@@ -20,8 +22,8 @@ public:
     float frequency;
 
     StimulusOption(
-        int areawidth,
-        int areaheight,
+        float areawidth,
+        float areaheight,
         float minforce,
         float maxforce,
         float frequency
@@ -36,26 +38,25 @@ public:
     }
   };
 
-  RectangleRainStimulator(const StimulusOption &option, int onstimulate(int, int, float));
+  RectangleRainStimulator(const StimulusOption &option, int onstimulatepoint(float, float, float));
   virtual ~RectangleRainStimulator();
 
-  int Execute();
+  virtual int Execute();
 
   // acccessor
   inline const StimulusOption &option() const {return option_;}
-  inline int areawidth() const {return option_.areawidth;}
-  inline int areaheight() const {return option_.areaheight;}
+  inline float areawidth() const {return option_.areawidth;}
+  inline float areaheight() const {return option_.areaheight;}
   inline float frequency() const {return option_.frequency;}
 
   // mutator
   inline void set_option(const StimulusOption &option) {memcpy(&option_, &option, sizeof(StimulusOption));}
-  inline void set_areawidth(int areawidth) {option_.areawidth = areawidth;}
-  inline void set_areaheight(int areaheight) {option_.areaheight = areaheight;}
+  inline void set_areawidth(float areawidth) {option_.areawidth = areawidth;}
+  inline void set_areaheight(float areaheight) {option_.areaheight = areaheight;}
   inline void set_frequency(float frequency) {option_.frequency = frequency;}
 
 private:
   StimulusOption option_;
-  int (*onstimulate_)(int, int, float);
 };
 
 #endif /* WATERSURFACESIM_RAINSTIMULATOR_H_ */

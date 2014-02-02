@@ -36,46 +36,71 @@
 
 #include "util/FPSCounter.h"
 #include "stimulator/RainStimulator.h"
+#include "stimulator/WalkerStimulator.h"
 #include "map/WaterSurfaceMap.h"
 
 #define UNUSED(_var) (void)_var
 
+/**
+ * the constants
+ */
+
+// the window settings
 static const char *WindowTitle = "Water Surface Simulator";
-static const int WindowPosX = 100;
-static const int WindowPosY = 100;
+static const int WindowPos[2] = { 100, 100 };
 static const int WindowWidth = 600;
 static const int WindowHeight = 600;
 
+// the general program settings
 static const int FPS = 60;
-static const int MapWidth = 200;
-static const int MapHeight = 200;
+
+// the bitmap handling settings
 static const char *BitmapPath = ".\\capture.bmp";
 
-static const float DefaultCharacterColor[] = {0.7f, 0.8f, 0.8f};
-static const float NoticeCharacterColor[] = {1.0f, 0.0f, 0.0f};
+// the character color of the debug print
+static const float DefaultCharacterColor[] = { 0.7f, 0.8f, 0.8f };
+static const float NoticeCharacterColor[] = { 1.0f, 0.0f, 0.0f };
 
+// the water-surface settings
+static const int MapWidth = 200;
+static const int MapHeight = 200;
 static const float DefaultPropagation = 0.2f;
 static const float DefaultAttenuation = 0.99f;
 
+// the rain stimulus settings
 static const float RainMinForce = 0.0f;
 static const float RainMaxForce = 25.0f;
 static const float RainFrequency = 0.2f;
 
-static const RectangleRainStimulator::StimulusOption RainOption(MapWidth,
-                                                                MapHeight,
-                                                                RainMinForce,
-                                                                RainMaxForce,
-                                                                RainFrequency);
+// the walker stimulus settings
+static const float WalkerDefaultPos[2] = { 50.0f, 50.0f };
+static const float WalkerSpeed = 5.0f;
+static const float WalkerTurnSpeed = 0.1f;
+static const float WalkerForce = 10.0f;
+static const float WalkerFootWidth = 5.0f;
+static const float WalkerFootWidthFlust = 2.0f;
+
+/**
+ * the file scope variables
+ */
+static const RectangleRainStimulator::StimulusOption RainOption(
+    static_cast<float>(MapWidth), static_cast<float>(MapHeight), RainMinForce,
+    RainMaxForce, RainFrequency);
+static const WalkerStimulator::StimulusOption WalkerOption(
+    WalkerDefaultPos[0], WalkerDefaultPos[1], WalkerSpeed, WalkerTurnSpeed,
+    WalkerForce, WalkerFootWidth, WalkerFootWidthFlust);
 
 static int get_time();
-static int on_stimulate(int x, int y, float force);
+static int on_stimulate(float x, float y, float force);
 
 static FPSCounter fpscounter(1000, get_time);
 static WaterSurfaceMap map(MapWidth, MapHeight, DefaultPropagation,
                            DefaultAttenuation);
 static RectangleRainStimulator rain(RainOption, on_stimulate);
-static bool pauseflag = false;
-static bool rainstimulateflag = true;
+static WalkerStimulator walker(WalkerOption, on_stimulate);
+static bool pause = false;
+static bool rainstimulate = true;
+static bool clickstart = false;
 
 /**
  * the callback function for FPSCounter
@@ -87,8 +112,8 @@ static int get_time() {
 /**
  * the callback function for RainStimulator
  */
-static int on_stimulate(int x, int y, float force) {
-  map.Set(x, y, force);
+static int on_stimulate(float x, float y, float force) {
+  map.Set(static_cast<int>(x), static_cast<int>(y), force);
   return 0;
 }
 
@@ -98,10 +123,11 @@ static int on_stimulate(int x, int y, float force) {
 void on_timer(int value) {
   UNUSED(value);
 
-  if (!pauseflag) {
-    if (rainstimulateflag) {
+  if (!pause) {
+    if (rainstimulate) {
       rain.Execute();
     }
+    walker.Execute();
     map.Execute();
     fpscounter.Update();
   }
@@ -111,9 +137,33 @@ void on_timer(int value) {
 }
 
 /**
+ * The callback function for the mouse click reaction
+ */
+void on_mouse_click(int button, int state, int x, int y) {
+  if (GLUT_LEFT_BUTTON == button) {
+    if (GLUT_DOWN == state) {
+      if (!clickstart) {
+        // must validate
+        int x_validate = std::max(std::min(x, WindowWidth), 0);
+        int y_validate = std::max(std::min(y, WindowHeight), 0);
+
+        int x_on_map = x_validate * MapWidth / WindowWidth;
+        int y_on_map = y_validate * MapHeight / WindowHeight;
+
+        map.Set(x_on_map, y_on_map, 100.0f);
+
+        clickstart = true;
+      }
+    } else if (GLUT_UP == state) {
+      clickstart = false;
+    }
+  }
+}
+
+/**
  * The callback function for the mouse drug reaction
  */
-void on_mouse_input(int x, int y) {
+void on_mouse_draw(int x, int y) {
   // must validate
   int x_validate = std::max(std::min(x, WindowWidth), 0);
   int y_validate = std::max(std::min(y, WindowHeight), 0);
@@ -131,18 +181,43 @@ void on_keyboard_input(unsigned char key, int x, int y) {
   UNUSED(x);
   UNUSED(y);
 
+  // simulator control
   switch (key) {
     case 'p':
-      pauseflag = !pauseflag;
+      pause = !pause;
       break;
+  }
+
+  // map control
+  switch (key) {
     case 'c':
       map.ClearAll();
       break;
-    case 'r':
-      rainstimulateflag = !rainstimulateflag;
-      break;
     case 'b':
       map.OutputBitmap(BitmapPath);
+      break;
+  }
+
+  // rain control
+  switch (key) {
+    case 'r':
+      rainstimulate = !rainstimulate;
+      break;
+  }
+
+  // walker control
+  switch (key) {
+    case 'w':
+      walker.Walk(1, 0);
+      break;
+    case 's':
+      walker.Walk(-1, 0);
+      break;
+    case 'd':
+      walker.Walk(0, 1);
+      break;
+    case 'a':
+      walker.Walk(0, -1);
       break;
   }
 }
@@ -195,19 +270,21 @@ void on_display(void) {
   ss << "real fps: " << fpscounter.fps() << " (ideal: " << FPS << ")";
   draw_string(-0.92f, 0.86f, DefaultCharacterColor, ss.str());
   ss.str("");
-  ss << "pause: " << (pauseflag ? "on" : "off");
-  const float (&color)[3] = pauseflag ? NoticeCharacterColor : DefaultCharacterColor;
-  draw_string(-0.92f, 0.78f, color, ss.str());
+  ss << "pause: " << (pause ? "on" : "off");
+  draw_string(-0.92f, 0.78f,
+              pause ? NoticeCharacterColor : DefaultCharacterColor, ss.str());
   ss.str("");
-  ss << "rain stimulus: " << (rainstimulateflag ? "on" : "off");
-  draw_string(-0.92f, 0.70f, DefaultCharacterColor, ss.str());
+  ss << "rain stimulus: " << (rainstimulate ? "on" : "off");
+  draw_string(-0.92f, 0.70f,
+              rainstimulate ? DefaultCharacterColor : NoticeCharacterColor,
+              ss.str());
 
   // Draw the how to interfere
   ss.str("");
   ss << "p: pause";
   draw_string(0.10f, -0.68f, DefaultCharacterColor, ss.str());
   ss.str("");
-  ss << "c: clear all";
+  ss << "c: clear the screen";
   draw_string(0.10f, -0.76f, DefaultCharacterColor, ss.str());
   ss.str("");
   ss << "r: toggle the rain effectivity";
@@ -228,7 +305,7 @@ int main(int argc, char** argv) {
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
   // Initialize the GLUT library and Create the Window
-  glutInitWindowPosition(WindowPosX, WindowPosY);
+  glutInitWindowPosition(WindowPos[0], WindowPos[1]);
   glutInitWindowSize(WindowWidth, WindowHeight);
   glutInit(&argc, argv);
   glutCreateWindow(WindowTitle);
@@ -238,7 +315,8 @@ int main(int argc, char** argv) {
   // Set the callback functions
   glutDisplayFunc(on_display);
   glutTimerFunc(1000 / FPS, on_timer, 0);
-  glutMotionFunc(on_mouse_input);
+  glutMouseFunc(on_mouse_click);
+  glutMotionFunc(on_mouse_draw);
   glutKeyboardFunc(on_keyboard_input);
 
   // Clear the screen
@@ -254,7 +332,6 @@ int main(int argc, char** argv) {
 
   // Execute the main loop
   map.ClearAll();
-  map.Set(map.width() / 2, map.height() / 2, 100.0f);
   glutMainLoop();
 
   // Release the texture

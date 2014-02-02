@@ -23,6 +23,8 @@
     <ClCompile Include="..\src\map\ColorMapBitmapMixIn.cc" />
     <ClCompile Include="..\src\map\WaterSurfaceMap.cc" />
     <ClCompile Include="..\src\stimulator\RainStimulator.cc" />
+    <ClCompile Include="..\src\stimulator\Stimulator.cc" />
+    <ClCompile Include="..\src\stimulator\WalkerStimulator.cc" />
     <ClCompile Include="..\src\util\FPSCounter.cc" />
     <ClCompile Include="..\src\WaterSurfaceSim.cc" />
   </ItemGroup>
@@ -31,6 +33,8 @@
     <ClInclude Include="..\src\map\ColorMapBitmapMixIn.h" />
     <ClInclude Include="..\src\map\WaterSurfaceMap.h" />
     <ClInclude Include="..\src\stimulator\RainStimulator.h" />
+    <ClInclude Include="..\src\stimulator\Stimulator.h" />
+    <ClInclude Include="..\src\stimulator\WalkerStimulator.h" />
     <ClInclude Include="..\src\util\FPSCounter.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -120,6 +124,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalIncludeDirectories>$(SolutionDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4351</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -136,6 +141,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <EnablePREfast>false</EnablePREfast>
       <AdditionalIncludeDirectories>$(SolutionDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4351</DisableSpecificWarnings>
     </ClCompile>
     <Link />
     <Link>
@@ -154,6 +160,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(SolutionDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4351</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -175,6 +182,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(SolutionDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4351</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

@@ -33,6 +33,12 @@
     <ClCompile Include="..\src\map\WaterSurfaceMap.cc">
       <Filter>src\map</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\stimulator\Stimulator.cc">
+      <Filter>src\stimulator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\stimulator\WalkerStimulator.cc">
+      <Filter>src\stimulator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\util\FPSCounter.h">
@@ -49,6 +55,12 @@
     </ClInclude>
     <ClInclude Include="..\src\map\WaterSurfaceMap.h">
       <Filter>src\map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\stimulator\Stimulator.h">
+      <Filter>src\stimulator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\stimulator\WalkerStimulator.h">
+      <Filter>src\stimulator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
