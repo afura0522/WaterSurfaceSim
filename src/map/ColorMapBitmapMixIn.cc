@@ -36,8 +36,7 @@ ColorMapBitmapMixIn::~ColorMapBitmapMixIn() {
 }
 
 void ColorMapBitmapMixIn::InitializeBitmapMixIn() {
-  bitmapbuf_ =
-      new char[map_->width() * map_->height() * map_->ColorNum]();
+  bitmapbuf_ = new char[map_->width() * map_->height() * map_->ColorNum]();
 }
 
 void ColorMapBitmapMixIn::FinalizeBitmapMixIn() {

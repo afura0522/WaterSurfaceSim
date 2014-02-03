@@ -21,7 +21,9 @@
   <ItemGroup>
     <ClCompile Include="..\src\map\ColorMap.cc" />
     <ClCompile Include="..\src\map\ColorMapBitmapMixIn.cc" />
+    <ClCompile Include="..\src\map\ColorWaterSurfaceMap.cc" />
     <ClCompile Include="..\src\map\WaterSurfaceMap.cc" />
+    <ClCompile Include="..\src\mechanism\WaterSurface.cc" />
     <ClCompile Include="..\src\stimulator\RainStimulator.cc" />
     <ClCompile Include="..\src\stimulator\Stimulator.cc" />
     <ClCompile Include="..\src\stimulator\WalkerStimulator.cc" />
@@ -31,7 +33,9 @@
   <ItemGroup>
     <ClInclude Include="..\src\map\ColorMap.h" />
     <ClInclude Include="..\src\map\ColorMapBitmapMixIn.h" />
+    <ClInclude Include="..\src\map\ColorWaterSurfaceMap.h" />
     <ClInclude Include="..\src\map\WaterSurfaceMap.h" />
+    <ClInclude Include="..\src\mechanism\WaterSurface.h" />
     <ClInclude Include="..\src\stimulator\RainStimulator.h" />
     <ClInclude Include="..\src\stimulator\Stimulator.h" />
     <ClInclude Include="..\src\stimulator\WalkerStimulator.h" />
@@ -90,7 +94,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(SolutionDir)freeglut\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)freeglut\lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);</LibraryPath>
+    <LibraryPath>$(SolutionDir)freeglut\lib\x64\Debug;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(Platform)\</OutDir>
     <TargetName>$(ProjectName)_$(Platform)_$(Configuration)</TargetName>
     <RunCodeAnalysis>false</RunCodeAnalysis>
@@ -103,7 +107,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(ProjectDir)..\freeglut\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(ProjectDir)..\freeglut\lib\x86;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
+    <LibraryPath>$(ProjectDir)..\freeglut\lib\x86\Debug;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(Platform)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_$(Platform)_$(Configuration)</TargetName>
@@ -125,14 +129,19 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalIncludeDirectories>$(SolutionDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4351</DisableSpecificWarnings>
+      <PreprocessorDefinitions>FREEGLUT_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <AdditionalDependencies>freeglut_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>(if not exist $(OutputPath) mkdir $(OutputPath)) &amp; copy /Y $(SolutionDir)freeglut\lib\x86\freeglut.dll $(OutputPath)\freeglut.dll</Command>
-      <Message>Copy the needed dll files</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -143,15 +152,20 @@
       <EnablePREfast>false</EnablePREfast>
       <AdditionalIncludeDirectories>$(SolutionDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4351</DisableSpecificWarnings>
+      <PreprocessorDefinitions>FREEGLUT_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link />
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <AdditionalDependencies>freeglut_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>(if not exist $(OutputPath) mkdir $(OutputPath)) &amp; copy /Y $(SolutionDir)freeglut\lib\x64\freeglut.dll $(OutputPath)\freeglut.dll</Command>
-      <Message>Copy the needed dll files</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -163,16 +177,21 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(SolutionDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4351</DisableSpecificWarnings>
+      <PreprocessorDefinitions>FREEGLUT_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <AdditionalDependencies>freeglut_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>(if not exist $(OutputPath) mkdir $(OutputPath)) &amp; copy /Y $(SolutionDir)freeglut\lib\x86\freeglut.dll $(OutputPath)\freeglut.dll</Command>
-      <Message>Copy the needed dll files</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -184,16 +203,21 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(SolutionDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4351</DisableSpecificWarnings>
+      <PreprocessorDefinitions>FREEGLUT_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <AdditionalDependencies>freeglut_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>(if not exist $(OutputPath) mkdir $(OutputPath)) &amp; copy /Y $(SolutionDir)freeglut\lib\x64\freeglut.dll $(OutputPath)\freeglut.dll</Command>
-      <Message>Copy the needed dll files</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

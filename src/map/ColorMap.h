@@ -19,29 +19,63 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __COLORMAP_H__
-#define __COLORMAP_H__
+#ifndef WATERSURFACESIM_COLORMAP_H_
+#define WATERSURFACESIM_COLORMAP_H_
+
+#include <cstring>
 
 class ColorMap {
 public:
-  static const int ColorNum;
+  enum {ColorNum = 3};
+  static const float WhiteColor[ColorNum];
 
   ColorMap(int width, int height);
   virtual ~ColorMap();
 
-  virtual void Initialize() = 0;
-  virtual void Finalize() = 0;
+  virtual void Initialize();
+  virtual void Finalize();
 
   virtual void Execute() = 0;
-  virtual void ClearAll() = 0;
-  virtual const float *OutputTexture() = 0;
 
-  inline int width() const {return width_;}
-  inline int height() const {return height_;}
+  virtual void ClearAll();
+  virtual const float *OutputTexture(const float (&basecolor)[ColorNum] = WhiteColor);
 
+  // accessor
+  inline int width() const {
+    return width_;
+  }
+  inline int height() const {
+    return height_;
+  }
+  inline float pixel(int x, int y, int rgb) {
+    return pixels_[y][x][rgb];
+  }
+  inline void pixel(int x, int y, float (&color)[ColorMap::ColorNum]) {
+    memcpy(pixels_[y][x], color, sizeof(float) * ColorMap::ColorNum);
+  }
+
+protected:
+  // mutator
+  inline void set_pixel(int x, int y, int rgb, float val) {
+    pixels_[y][x][rgb] = val;
+  }
+  inline void set_pixel(int x, int y, const float (&color)[ColorMap::ColorNum]) {
+    memcpy(pixels_[y][x], color, sizeof(float) * ColorMap::ColorNum);
+  }
+  inline void set_texturebuf(int x, int y, int rgb, float val) {
+    texturebuf_[(x * height_ + y) * ColorNum + rgb] = val;
+  }
+  inline void set_texturebufflush(bool val) {
+    texturebufflush_ = val;
+  }
+
+  float *pixelbuf_;
 private:
   int width_;
   int height_;
+  float ***pixels_;
+  float *texturebuf_;
+  bool texturebufflush_;
 };
 
-#endif /* __COLORMAP_H__ */
+#endif /* WATERSURFACESIM_COLORMAP_H_ */

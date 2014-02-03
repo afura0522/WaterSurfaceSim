@@ -13,6 +13,9 @@
     <Filter Include="src\util">
       <UniqueIdentifier>{5c2a6124-d1a9-4552-a6e2-6aa2807e2257}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\mechanism">
+      <UniqueIdentifier>{a72cd0e9-5745-4d2f-9196-856421a245e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\WaterSurfaceSim.cc">
@@ -39,6 +42,12 @@
     <ClCompile Include="..\src\stimulator\WalkerStimulator.cc">
       <Filter>src\stimulator</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\map\ColorWaterSurfaceMap.cc">
+      <Filter>src\map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mechanism\WaterSurface.cc">
+      <Filter>src\mechanism</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\util\FPSCounter.h">
@@ -61,6 +70,12 @@
     </ClInclude>
     <ClInclude Include="..\src\stimulator\WalkerStimulator.h">
       <Filter>src\stimulator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\map\ColorWaterSurfaceMap.h">
+      <Filter>src\map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mechanism\WaterSurface.h">
+      <Filter>src\mechanism</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -31,10 +31,10 @@
 #include <freeglut.h>
 #pragma warning(pop)
 
-#include "util/FPSCounter.h"
+#include "map/ColorWaterSurfaceMap.h"
 #include "stimulator/RainStimulator.h"
 #include "stimulator/WalkerStimulator.h"
-#include "map/WaterSurfaceMap.h"
+#include "util/FPSCounter.h"
 
 #define UNUSED(_var) (void)_var
 
@@ -63,6 +63,7 @@ static const int MapWidth = 200;
 static const int MapHeight = 200;
 static const float DefaultPropagation = 0.2f;
 static const float DefaultAttenuation = 0.99f;
+static const float WaterSurfaceBaseColor[3] = { 1.0f, 1.0f, 1.0f };
 
 // the rain stimulus settings
 static const float RainMinForce = 0.0f;
@@ -91,8 +92,8 @@ static int get_time();
 static int on_stimulate(float x, float y, float force);
 
 static FPSCounter fpscounter(1000, get_time);
-static WaterSurfaceMap map(MapWidth, MapHeight, DefaultPropagation,
-                           DefaultAttenuation);
+static ColorWaterSurfaceMap map(MapWidth, MapHeight, DefaultPropagation,
+                                DefaultAttenuation);
 static RectangleRainStimulator rain(RainOption, on_stimulate);
 static WalkerStimulator walker(WalkerOption, on_stimulate);
 static bool pause = false;
@@ -110,7 +111,11 @@ static int get_time() {
  * the callback function for RainStimulator
  */
 static int on_stimulate(float x, float y, float force) {
-  map.Set(static_cast<int>(x), static_cast<int>(y), force);
+  float color[ColorMap::ColorNum] = { };
+  for (int i = 0; i < ColorMap::ColorNum; ++i) {
+    color[i] = static_cast<float>(rand()) / RAND_MAX * force;
+  }
+  map.SetHeight(static_cast<int>(x), static_cast<int>(y), color);
   return 0;
 }
 
@@ -147,7 +152,11 @@ void on_mouse_click(int button, int state, int x, int y) {
         int x_on_map = x_validate * MapWidth / WindowWidth;
         int y_on_map = y_validate * MapHeight / WindowHeight;
 
-        map.Set(x_on_map, y_on_map, 100.0f);
+        float color[ColorMap::ColorNum] = { };
+        for (int i = 0; i < ColorMap::ColorNum; ++i) {
+          color[i] = static_cast<float>(rand()) / RAND_MAX;
+        }
+        map.SetHeight(x_on_map, y_on_map, color);
 
         clickstart = true;
       }
@@ -168,7 +177,11 @@ void on_mouse_draw(int x, int y) {
   int x_on_map = x_validate * MapWidth / WindowWidth;
   int y_on_map = y_validate * MapHeight / WindowHeight;
 
-  map.Set(x_on_map, y_on_map, 100.0f);
+  float color[ColorMap::ColorNum] = { };
+  for (int i = 0; i < ColorMap::ColorNum; ++i) {
+    color[i] = static_cast<float>(rand()) / RAND_MAX;
+  }
+  map.SetHeight(x_on_map, y_on_map, color);
 }
 
 /**
@@ -244,7 +257,7 @@ void on_display(void) {
   glLoadIdentity();
 
   // Update the texture
-  const float *texture = map.OutputTexture();
+  const float *texture = map.OutputTexture(WaterSurfaceBaseColor);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, MapWidth, MapHeight, 0, GL_RGB,
                GL_FLOAT, texture);
 
@@ -317,7 +330,7 @@ int main(int argc, char** argv) {
   glutKeyboardFunc(on_keyboard_input);
 
   // Create the popup menu (to avoid the unused function warning)
-  glutCreateMenu(NULL);
+  glutCreateMenu (NULL);
 
   // Clear the screen
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -331,7 +344,6 @@ int main(int argc, char** argv) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
   // Execute the main loop
-  map.ClearAll();
   glutMainLoop();
 
   // Release the texture

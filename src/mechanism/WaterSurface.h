@@ -19,17 +19,15 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __WATERSURFACEMAP_H__
-#define __WATERSURFACEMAP_H__
+#ifndef WATERSURFACESIM_WATERSURFACE_H_
+#define WATERSURFACESIM_WATERSURFACE_H_
 
-#include "map/ColorMap.h"
-#include "map/ColorMapBitmapMixIn.h"
-#include "mechanism/WaterSurface.h"
+#include <cstring>
 
-class WaterSurfaceMap : public ColorMap, public ColorMapBitmapMixIn {
+class WaterSurface {
 public:
-  WaterSurfaceMap(int width, int height, float propagation, float attenuation);
-  virtual ~WaterSurfaceMap();
+  WaterSurface(int width, int height, float propagation, float attenuation);
+  virtual ~WaterSurface();
 
   virtual void Initialize();
   virtual void Finalize();
@@ -37,10 +35,20 @@ public:
   virtual void Execute();
   virtual void ClearAll();
 
-  void SetHeight(int x, int y, float height);
+  inline void SetHeight(int x, int y, float height) {currheights_[y][x] = height;}
+  inline float GetHeight(int x, int y) const {return currheights_[y][x];}
 
 private:
-  WaterSurface ws;
+  int width_;
+  int height_;
+  float propagation_;
+  float attenuation_;
+  float *prevheightbuf_;
+  float *currheightbuf_;
+  float *nextheightbuf_;
+  float **prevheights_;
+  float **currheights_;
+  float **nextheights_;
 };
 
-#endif /* __WATERSURFACEMAP_H__ */
+#endif /* WATERSURFACESIM_WATERSURFACE_H_ */

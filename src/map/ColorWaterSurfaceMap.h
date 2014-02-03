@@ -19,55 +19,29 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "map/WaterSurfaceMap.h"
-
-#include <algorithm>
+#ifndef __COLORWATERSURFACEMAP_H__
+#define __COLORWATERSURFACEMAP_H__
 
 #include "ColorMap.h"
+#include "ColorMapBitmapMixIn.h"
 
-WaterSurfaceMap::WaterSurfaceMap(int width, int height, float propagation,
-                                 float attenuation)
-    : ColorMap(width, height),
-      ColorMapBitmapMixIn(this),
-      ws(width, height, propagation, attenuation) {
-}
+class WaterSurface;
 
-WaterSurfaceMap::~WaterSurfaceMap() {
-}
+class ColorWaterSurfaceMap : public ColorMap, public ColorMapBitmapMixIn {
+public:
+  ColorWaterSurfaceMap(int width, int height, float propagation, float attenuation);
+  virtual ~ColorWaterSurfaceMap();
 
-void WaterSurfaceMap::Initialize() {
-  ws.Initialize();
-  InitializeBitmapMixIn();
-}
+  virtual void Initialize();
+  virtual void Finalize();
 
-void WaterSurfaceMap::Finalize() {
-  FinalizeBitmapMixIn();
-  ws.Finalize();
-}
+  virtual void Execute();
+  virtual void ClearAll();
 
-void WaterSurfaceMap::Execute() {
-  // êFèÓïÒçXêV
-  ws.Execute();
+  void SetHeight(int x, int y, float (&color)[ColorMap::ColorNum]);
 
-  for (int i = 0; i < height(); ++i) {
-    for (int j = 0; j < width(); ++j) {
-      for (int k = 0; k < ColorMap::ColorNum; ++k) {
-        set_pixel(j, i, k, ws.GetHeight(j, i));
-      }
-    }
-  }
+private:
+  WaterSurface *wss_[ColorMap::ColorNum];
+};
 
-  set_texturebufflush(true);
-}
-
-void WaterSurfaceMap::ClearAll() {
-  ColorMap::ClearAll();
-  ws.ClearAll();
-}
-
-void WaterSurfaceMap::SetHeight(int x, int y, float height) {
-  // must validate
-  int x_validate = std::min(std::max(x, 0), width() - 1);
-  int y_validate = std::min(std::max(y, 0), this->height() - 1);
-  ws.SetHeight(x_validate, y_validate, height);
-}
+#endif /* __WATERSURFACEMAP_H__ */

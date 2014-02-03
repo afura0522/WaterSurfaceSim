@@ -19,14 +19,63 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "map/ColorMap.h"
+#include "ColorMap.h"
 
-const int ColorMap::ColorNum = 3;
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+
+const float ColorMap::WhiteColor[ColorMap::ColorNum] = { 1.0f, 1.0f, 1.0f };
 
 ColorMap::ColorMap(int width, int height)
     : width_(width),
-      height_(height) {
+      height_(height),
+      pixels_(),
+      pixelbuf_(NULL),
+      texturebuf_(NULL),
+      texturebufflush_(true) {
+  pixelbuf_ = new float[width * height * ColorNum]();
+  pixels_ = new float**[width]();
+  for (int i = 0; i < height; ++i) {
+    pixels_[i] = new float*[height]();
+    for (int j = 0; j < width; ++j) {
+      pixels_[i][j] = pixelbuf_ + ColorNum * (height * i + j);
+    }
+  }
+  texturebuf_ = new float[width * height * ColorMap::ColorNum]();
 }
 
 ColorMap::~ColorMap() {
+  delete[] texturebuf_;
+  for (int i = 0; i < height_; ++i) {
+    delete pixels_[i];
+  }
+  delete pixels_;
+  delete pixelbuf_;
+}
+
+void ColorMap::Initialize() {
+  ClearAll();
+}
+
+void ColorMap::Finalize() {
+}
+
+void ColorMap::ClearAll() {
+  memset(pixelbuf_, 0, width() * height() * ColorNum * sizeof(float));
+}
+
+const float *ColorMap::OutputTexture(
+    const float (&basecolor)[ColorMap::ColorNum]) {
+  if (texturebufflush_) {
+    for (int i = 0; i < height(); ++i) {
+      for (int j = 0; j < width(); ++j) {
+        for (int k = 0; k < ColorMap::ColorNum; ++k) {
+          set_texturebuf(j, i, k, basecolor[k] * pixel(j, i, k));
+        }
+      }
+    }
+    texturebufflush_ = false;
+  }
+  return texturebuf_;
 }
