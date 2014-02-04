@@ -7,14 +7,14 @@
     <Filter Include="src\map">
       <UniqueIdentifier>{5d735d09-3734-4bfa-921a-7b11168be8e6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\stimulator">
-      <UniqueIdentifier>{ca31f6c0-86ab-44ac-8e5c-982ff326bb88}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\util">
       <UniqueIdentifier>{5c2a6124-d1a9-4552-a6e2-6aa2807e2257}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\mechanism">
       <UniqueIdentifier>{a72cd0e9-5745-4d2f-9196-856421a245e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\generator">
+      <UniqueIdentifier>{77f526f7-9077-4fd9-a9fe-2b423706f962}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -23,9 +23,6 @@
     </ClCompile>
     <ClCompile Include="..\src\util\FPSCounter.cc">
       <Filter>src\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\stimulator\RainStimulator.cc">
-      <Filter>src\stimulator</Filter>
     </ClCompile>
     <ClCompile Include="..\src\map\ColorMap.cc">
       <Filter>src\map</Filter>
@@ -36,25 +33,25 @@
     <ClCompile Include="..\src\map\WaterSurfaceMap.cc">
       <Filter>src\map</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\stimulator\Stimulator.cc">
-      <Filter>src\stimulator</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\stimulator\WalkerStimulator.cc">
-      <Filter>src\stimulator</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\map\ColorWaterSurfaceMap.cc">
       <Filter>src\map</Filter>
     </ClCompile>
     <ClCompile Include="..\src\mechanism\WaterSurface.cc">
       <Filter>src\mechanism</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\generator\Generator.cc">
+      <Filter>src\generator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\generator\RainGenerator.cc">
+      <Filter>src\generator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\generator\FootprintGenerator.cc">
+      <Filter>src\generator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\util\FPSCounter.h">
       <Filter>src\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\stimulator\RainStimulator.h">
-      <Filter>src\stimulator</Filter>
     </ClInclude>
     <ClInclude Include="..\src\map\ColorMap.h">
       <Filter>src\map</Filter>
@@ -65,17 +62,20 @@
     <ClInclude Include="..\src\map\WaterSurfaceMap.h">
       <Filter>src\map</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\stimulator\Stimulator.h">
-      <Filter>src\stimulator</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\stimulator\WalkerStimulator.h">
-      <Filter>src\stimulator</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\map\ColorWaterSurfaceMap.h">
       <Filter>src\map</Filter>
     </ClInclude>
     <ClInclude Include="..\src\mechanism\WaterSurface.h">
       <Filter>src\mechanism</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\generator\Generator.h">
+      <Filter>src\generator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\generator\RainGenerator.h">
+      <Filter>src\generator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\generator\FootprintGenerator.h">
+      <Filter>src\generator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

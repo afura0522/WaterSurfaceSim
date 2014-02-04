@@ -19,26 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\generator\FootprintGenerator.cc" />
+    <ClCompile Include="..\src\generator\Generator.cc" />
+    <ClCompile Include="..\src\generator\RainGenerator.cc" />
     <ClCompile Include="..\src\map\ColorMap.cc" />
     <ClCompile Include="..\src\map\ColorMapBitmapMixIn.cc" />
     <ClCompile Include="..\src\map\ColorWaterSurfaceMap.cc" />
     <ClCompile Include="..\src\map\WaterSurfaceMap.cc" />
     <ClCompile Include="..\src\mechanism\WaterSurface.cc" />
-    <ClCompile Include="..\src\stimulator\RainStimulator.cc" />
-    <ClCompile Include="..\src\stimulator\Stimulator.cc" />
-    <ClCompile Include="..\src\stimulator\WalkerStimulator.cc" />
     <ClCompile Include="..\src\util\FPSCounter.cc" />
     <ClCompile Include="..\src\WaterSurfaceSim.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\generator\FootprintGenerator.h" />
+    <ClInclude Include="..\src\generator\Generator.h" />
+    <ClInclude Include="..\src\generator\RainGenerator.h" />
     <ClInclude Include="..\src\map\ColorMap.h" />
     <ClInclude Include="..\src\map\ColorMapBitmapMixIn.h" />
     <ClInclude Include="..\src\map\ColorWaterSurfaceMap.h" />
     <ClInclude Include="..\src\map\WaterSurfaceMap.h" />
     <ClInclude Include="..\src\mechanism\WaterSurface.h" />
-    <ClInclude Include="..\src\stimulator\RainStimulator.h" />
-    <ClInclude Include="..\src\stimulator\Stimulator.h" />
-    <ClInclude Include="..\src\stimulator\WalkerStimulator.h" />
     <ClInclude Include="..\src\util\FPSCounter.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

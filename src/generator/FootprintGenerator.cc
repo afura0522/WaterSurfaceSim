@@ -23,7 +23,7 @@
  *  Handle the angle on the unit of radian.
  */
 
-#include "stimulator/WalkerStimulator.h"
+#include "generator/FootprintGenerator.h"
 
 #define _USE_MATH_DEFINES
 #include <cmath>
@@ -36,9 +36,9 @@ static const float PI = static_cast<float>(M_PI);
 /**
  * Constructor
  */
-WalkerStimulator::WalkerStimulator(const StimulusOption& option,
-                                   int (*onstimulatepoint)(float, float, float))
-    : Stimulator(onstimulatepoint),
+FootprintGenerator::FootprintGenerator(const OriginOption& option,
+                                   int (*ongeneration)(int, int, float))
+    : Generator(ongeneration),
       option_(option),
       go_(0),
       turn_(0),
@@ -51,7 +51,7 @@ WalkerStimulator::WalkerStimulator(const StimulusOption& option,
 /**
  * Destructer
  */
-WalkerStimulator::~WalkerStimulator() {
+FootprintGenerator::~FootprintGenerator() {
 }
 
 /**
@@ -63,7 +63,7 @@ WalkerStimulator::~WalkerStimulator() {
  * and if turn is set as negative integer the walker turn right,
  * and if turn is set as zero the walker don't turn.
  */
-void WalkerStimulator::Walk(int go, int turn) {
+void FootprintGenerator::Walk(int go, int turn) {
   go_ = go;
   turn_ = turn;
 }
@@ -72,7 +72,7 @@ void WalkerStimulator::Walk(int go, int turn) {
  * Update the walker status,
  * and stimulate the point for the one side foot to earth.
  */
-int WalkerStimulator::Execute() {
+int FootprintGenerator::Execute() {
   // update the direction
   if (0 < turn_) {
     dir_ += option_.turnspeed;
@@ -105,9 +105,9 @@ int WalkerStimulator::Execute() {
         * (foot_ ? 1.0f : -1.0f);
     float footoffsetx = footoffset * std::cos((dir_ + 0.5f) * PI);
     float footoffsety = footoffset * std::sin((dir_ + 0.5f) * PI);
-    float x = posx_ + footoffsetx;
-    float y = posy_ + footoffsety;
-    int ret = StimulatePoint(x, y, option_.force);
+    int x = static_cast<int>(posx_ + footoffsetx);
+    int y = static_cast<int>(posy_ + footoffsety);
+    int ret = Generate(x, y, option_.force);
     if (0 > ret) {
       return -1;
     }

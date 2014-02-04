@@ -32,8 +32,8 @@
 #pragma warning(pop)
 
 #include "map/ColorWaterSurfaceMap.h"
-#include "stimulator/RainStimulator.h"
-#include "stimulator/WalkerStimulator.h"
+#include "generator/RainGenerator.h"
+#include "generator/FootprintGenerator.h"
 #include "util/FPSCounter.h"
 
 #define UNUSED(_var) (void)_var
@@ -71,33 +71,32 @@ static const float RainMaxForce = 25.0f;
 static const float RainFrequency = 0.2f;
 
 // the walker stimulus settings
-static const float WalkerDefaultPos[2] = { 50.0f, 50.0f };
-static const float WalkerSpeed = 5.0f;
-static const float WalkerTurnSpeed = 0.1f;
-static const float WalkerForce = 10.0f;
-static const float WalkerFootWidth = 5.0f;
-static const float WalkerFootWidthFlust = 2.0f;
+static const float FootprintDefaultPos[2] = { 50.0f, 50.0f };
+static const float FootprintSpeed = 5.0f;
+static const float FootprintTurnSpeed = 0.1f;
+static const float FootprintForce = 10.0f;
+static const float FootprintFootWidth = 5.0f;
+static const float FootprintFootWidthFlust = 2.0f;
 
 /**
  * the file scope variables
  */
-static const RectangleRainStimulator::StimulusOption RainOption(
-    static_cast<float>(MapWidth), static_cast<float>(MapHeight), RainMinForce,
-    RainMaxForce, RainFrequency);
-static const WalkerStimulator::StimulusOption WalkerOption(
-    WalkerDefaultPos[0], WalkerDefaultPos[1], WalkerSpeed, WalkerTurnSpeed,
-    WalkerForce, WalkerFootWidth, WalkerFootWidthFlust);
+static const RainGenerator::OriginOption RainOption(
+    MapWidth, MapHeight, RainMinForce, RainMaxForce, RainFrequency);
+static const FootprintGenerator::OriginOption FootprintOption(
+    FootprintDefaultPos[0], FootprintDefaultPos[1], FootprintSpeed, FootprintTurnSpeed,
+    FootprintForce, FootprintFootWidth, FootprintFootWidthFlust);
 
 static int get_time();
-static int on_stimulate(float x, float y, float force);
+static int on_generation(int x, int y, float force);
 
 static FPSCounter fpscounter(1000, get_time);
 static ColorWaterSurfaceMap map(MapWidth, MapHeight, DefaultPropagation,
                                 DefaultAttenuation);
-static RectangleRainStimulator rain(RainOption, on_stimulate);
-static WalkerStimulator walker(WalkerOption, on_stimulate);
+static RainGenerator rain(RainOption, on_generation);
+static FootprintGenerator footprint(FootprintOption, on_generation);
 static bool pause = false;
-static bool rainstimulate = true;
+static bool raingeneration = true;
 static bool clickstart = false;
 
 /**
@@ -108,14 +107,14 @@ static int get_time() {
 }
 
 /**
- * the callback function for RainStimulator
+ * the callback function for RainGenerator
  */
-static int on_stimulate(float x, float y, float force) {
+static int on_generation(int x, int y, float force) {
   float color[ColorMap::ColorNum] = { };
   for (int i = 0; i < ColorMap::ColorNum; ++i) {
     color[i] = static_cast<float>(rand()) / RAND_MAX * force;
   }
-  map.SetHeight(static_cast<int>(x), static_cast<int>(y), color);
+  map.SetHeight(x, y, color);
   return 0;
 }
 
@@ -126,10 +125,10 @@ void on_timer(int value) {
   UNUSED(value);
 
   if (!pause) {
-    if (rainstimulate) {
+    if (raingeneration) {
       rain.Execute();
     }
-    walker.Execute();
+    footprint.Execute();
     map.Execute();
     fpscounter.Update();
   }
@@ -211,23 +210,23 @@ void on_keyboard_input(unsigned char key, int x, int y) {
   // rain control
   switch (key) {
     case 'r':
-      rainstimulate = !rainstimulate;
+      raingeneration = !raingeneration;
       break;
   }
 
   // walker control
   switch (key) {
     case 'w':
-      walker.Walk(1, 0);
+      footprint.Walk(1, 0);
       break;
     case 's':
-      walker.Walk(-1, 0);
+      footprint.Walk(-1, 0);
       break;
     case 'd':
-      walker.Walk(0, 1);
+      footprint.Walk(0, 1);
       break;
     case 'a':
-      walker.Walk(0, -1);
+      footprint.Walk(0, -1);
       break;
   }
 }
@@ -284,9 +283,9 @@ void on_display(void) {
   draw_string(-0.92f, 0.78f,
               pause ? NoticeCharacterColor : DefaultCharacterColor, ss.str());
   ss.str("");
-  ss << "rain stimulus: " << (rainstimulate ? "on" : "off");
+  ss << "rain generation: " << (raingeneration ? "on" : "off");
   draw_string(-0.92f, 0.70f,
-              rainstimulate ? DefaultCharacterColor : NoticeCharacterColor,
+              raingeneration ? DefaultCharacterColor : NoticeCharacterColor,
               ss.str());
 
   // Draw the how to interfere

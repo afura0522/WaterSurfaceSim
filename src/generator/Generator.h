@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 The Motel On Jupiter
+ * Copyright (C) 2014 The Motel On Jupiter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -19,12 +19,23 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stimulator/Stimulator.h"
+#ifndef WATERSURFACESIM_GENERATOR_H_
+#define WATERSURFACESIM_GENERATOR_H_
 
-Stimulator::Stimulator(int (*onstimulatepoint)(float, float, float))
-    : onstimulatepoint_(onstimulatepoint) {
-}
+class Generator {
+public:
+  virtual int Execute() = 0;
 
-Stimulator::~Stimulator() {
-}
+protected:
+  Generator(int (*ongeneration)(int, int, float));
+  virtual ~Generator();
 
+  inline int Generate(int x, int y, float force) {
+    return ongeneration_(x, y, force);
+  }
+
+private:
+  int (*ongeneration_)(int, int, float);
+};
+
+#endif /* WATERSURFACESIM_GENERATOR_H_ */
