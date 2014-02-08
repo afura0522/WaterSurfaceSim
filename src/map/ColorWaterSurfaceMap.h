@@ -19,8 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __COLORWATERSURFACEMAP_H__
-#define __COLORWATERSURFACEMAP_H__
+#ifndef WATERSURFACESIM_COLORWATERSURFACEMAP_H_
+#define WATERSURFACESIM_COLORWATERSURFACEMAP_H_
 
 #include "ColorMap.h"
 #include "ColorMapBitmapMixIn.h"
@@ -29,7 +29,7 @@ class WaterSurface;
 
 class ColorWaterSurfaceMap : public ColorMap, public ColorMapBitmapMixIn {
 public:
-  ColorWaterSurfaceMap(int width, int height, float propagation, float attenuation);
+  ColorWaterSurfaceMap(int width, int height, float propagation, float attenuation, const float (&heightrange)[2]);
   virtual ~ColorWaterSurfaceMap();
 
   virtual void Initialize();
@@ -38,10 +38,12 @@ public:
   virtual void Execute();
   virtual void ClearAll();
 
-  void SetHeight(int x, int y, float (&color)[ColorMap::ColorNum]);
+  void SetHeight(int x, int y, const float (&color)[ColorMap::ColorNum]);
+  void GetHeight(int x, int y, float (&color)[ColorMap::ColorNum]) const;
 
 private:
-  WaterSurface *wss_[ColorMap::ColorNum];
+  WaterSurface *ws_[ColorMap::ColorNum];
+  float heightrange_[2];
 };
 
-#endif /* __WATERSURFACEMAP_H__ */
+#endif /* WATERSURFACESIM_WATERSURFACEMAP_H_ */

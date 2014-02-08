@@ -71,3 +71,10 @@ void WaterSurfaceMap::SetHeight(int x, int y, float height) {
   int y_validate = std::min(std::max(y, 0), this->height() - 1);
   ws.SetHeight(x_validate, y_validate, height);
 }
+
+float WaterSurfaceMap::GetHeight(int x, int y) const {
+  // must validate
+  int x_validate = std::min(std::max(x, 0), width() - 1);
+  int y_validate = std::min(std::max(y, 0), this->height() - 1);
+  return ws.GetHeight(x_validate, y_validate);
+}

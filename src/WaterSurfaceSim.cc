@@ -26,17 +26,21 @@
 
 #include <algorithm>
 #include <sstream>
+#include <iomanip>
 
 #pragma warning(push)
 #include <freeglut.h>
 #pragma warning(pop)
 
-#include "map/ColorWaterSurfaceMap.h"
-#include "generator/RainGenerator.h"
 #include "generator/FootprintGenerator.h"
+#include "generator/RainGenerator.h"
+#include "map/ColorWaterSurfaceMap.h"
 #include "util/FPSCounter.h"
 
 #define UNUSED(_var) (void)_var
+
+static int get_time();
+static int on_generation(int x, int y, float force);
 
 /**
  * the constants
@@ -50,27 +54,31 @@ static const int WindowHeight = 600;
 
 // the general program settings
 static const int FPS = 60;
+static const void *FontType = GLUT_BITMAP_9_BY_15;
+static const float DefaultFontColor[] = { 0.7f, 0.8f, 0.8f };
+static const float NoticeFontColor[] = { 1.0f, 0.0f, 0.0f };
 
 // the bitmap handling settings
 static const char *BitmapPath = ".\\capture.bmp";
 
-// the character color of the debug print
-static const float DefaultCharacterColor[] = { 0.7f, 0.8f, 0.8f };
-static const float NoticeCharacterColor[] = { 1.0f, 0.0f, 0.0f };
-
-// the water-surface settings
+// the water surface settings
 static const int MapWidth = 200;
 static const int MapHeight = 200;
 static const float DefaultPropagation = 0.2f;
 static const float DefaultAttenuation = 0.99f;
+static const float WaterHeightRange[2] = { -0.2f, 5.0f };
 static const float WaterSurfaceBaseColor[3] = { 1.0f, 1.0f, 1.0f };
 
-// the rain stimulus settings
-static const float RainMinForce = 0.0f;
-static const float RainMaxForce = 25.0f;
+// the mouse click generation settings
+static const float MouseClickForce = 10.0f;
+static const float MouseDragForce = 5.0f;
+
+// the rain generation settings
+static const float RainMinForce = 5.0f;
+static const float RainMaxForce = 15.0f;
 static const float RainFrequency = 0.2f;
 
-// the walker stimulus settings
+// the footprint generation settings
 static const float FootprintDefaultPos[2] = { 50.0f, 50.0f };
 static const float FootprintSpeed = 5.0f;
 static const float FootprintTurnSpeed = 0.1f;
@@ -81,23 +89,24 @@ static const float FootprintFootWidthFlust = 2.0f;
 /**
  * the file scope variables
  */
-static const RainGenerator::OriginOption RainOption(
-    MapWidth, MapHeight, RainMinForce, RainMaxForce, RainFrequency);
+static const RainGenerator::OriginOption RainOption(MapWidth, MapHeight,
+                                                    RainMinForce, RainMaxForce,
+                                                    RainFrequency);
 static const FootprintGenerator::OriginOption FootprintOption(
-    FootprintDefaultPos[0], FootprintDefaultPos[1], FootprintSpeed, FootprintTurnSpeed,
-    FootprintForce, FootprintFootWidth, FootprintFootWidthFlust);
-
-static int get_time();
-static int on_generation(int x, int y, float force);
+    FootprintDefaultPos[0], FootprintDefaultPos[1], FootprintSpeed,
+    FootprintTurnSpeed, FootprintForce, FootprintFootWidth,
+    FootprintFootWidthFlust);
 
 static FPSCounter fpscounter(1000, get_time);
 static ColorWaterSurfaceMap map(MapWidth, MapHeight, DefaultPropagation,
-                                DefaultAttenuation);
+                                DefaultAttenuation, WaterHeightRange);
 static RainGenerator rain(RainOption, on_generation);
 static FootprintGenerator footprint(FootprintOption, on_generation);
 static bool pause = false;
 static bool raingeneration = true;
 static bool clickstart = false;
+static bool pixelcapture = false;
+static int mousepos[2];
 
 /**
  * the callback function for FPSCounter
@@ -144,16 +153,11 @@ void on_mouse_click(int button, int state, int x, int y) {
   if (GLUT_LEFT_BUTTON == button) {
     if (GLUT_DOWN == state) {
       if (!clickstart) {
-        // must validate
-        int x_validate = std::max(std::min(x, WindowWidth), 0);
-        int y_validate = std::max(std::min(y, WindowHeight), 0);
-
-        int x_on_map = x_validate * MapWidth / WindowWidth;
-        int y_on_map = y_validate * MapHeight / WindowHeight;
-
+        int x_on_map = x * MapWidth / WindowWidth;
+        int y_on_map = y * MapHeight / WindowHeight;
         float color[ColorMap::ColorNum] = { };
         for (int i = 0; i < ColorMap::ColorNum; ++i) {
-          color[i] = static_cast<float>(rand()) / RAND_MAX;
+          color[i] = MouseClickForce * static_cast<float>(rand()) / RAND_MAX;
         }
         map.SetHeight(x_on_map, y_on_map, color);
 
@@ -168,19 +172,23 @@ void on_mouse_click(int button, int state, int x, int y) {
 /**
  * The callback function for the mouse drug reaction
  */
-void on_mouse_draw(int x, int y) {
-  // must validate
-  int x_validate = std::max(std::min(x, WindowWidth), 0);
-  int y_validate = std::max(std::min(y, WindowHeight), 0);
-
-  int x_on_map = x_validate * MapWidth / WindowWidth;
-  int y_on_map = y_validate * MapHeight / WindowHeight;
+void on_mouse_drag(int x, int y) {
+  int x_on_map = x * MapWidth / WindowWidth;
+  int y_on_map = y * MapHeight / WindowHeight;
 
   float color[ColorMap::ColorNum] = { };
   for (int i = 0; i < ColorMap::ColorNum; ++i) {
-    color[i] = static_cast<float>(rand()) / RAND_MAX;
+    color[i] = MouseDragForce * static_cast<float>(rand()) / RAND_MAX;
   }
   map.SetHeight(x_on_map, y_on_map, color);
+}
+
+/**
+ * The callback function for the mouse drug reaction
+ */
+void on_mouse_move(int x, int y) {
+  mousepos[0] = x * MapWidth / WindowWidth;
+  mousepos[1] = y * MapHeight / WindowHeight;
 }
 
 /**
@@ -194,6 +202,9 @@ void on_keyboard_input(unsigned char key, int x, int y) {
   switch (key) {
     case 'p':
       pause = !pause;
+      break;
+    case 't':
+      pixelcapture = !pixelcapture;
       break;
   }
 
@@ -240,7 +251,7 @@ void draw_string(float x, float y, const float (&color)[3], std::string str) {
   glRasterPos3f(x, y, -1.0f);
   const char* p = str.c_str();
   while ('\0' != *p) {
-    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *p);
+    glutBitmapCharacter((void *) FontType, *p);
     ++p;
   }
   glEnable(GL_TEXTURE_2D);
@@ -273,34 +284,62 @@ void on_display(void) {
   glVertex2f(1.0f, 1.0f);
   glEnd();
 
+  // Get the color of the pixel where mouse is pointing at
+  float mousepointcolors[ColorMap::ColorNum];
+  if ((0 > mousepos[0]) || (MapWidth < mousepos[0]) || (0 > mousepos[1])
+      || (MapHeight < mousepos[1])) {
+    for (int i = 0; i < ColorMap::ColorNum; ++i) {
+      mousepointcolors[i] = -1.0f;
+    }
+  } else {
+    map.texturebuf(mousepos[0], mousepos[1], mousepointcolors);
+  }
+
   // Draw the current FPS
   std::stringstream ss;
   ss.str("");
   ss << "real fps: " << fpscounter.fps() << " (ideal: " << FPS << ")";
-  draw_string(-0.92f, 0.86f, DefaultCharacterColor, ss.str());
+  draw_string(-0.92f, 0.86f, DefaultFontColor, ss.str());
   ss.str("");
   ss << "pause: " << (pause ? "on" : "off");
   draw_string(-0.92f, 0.78f,
-              pause ? NoticeCharacterColor : DefaultCharacterColor, ss.str());
+              pause ? NoticeFontColor : DefaultFontColor, ss.str());
+  ss.str("");
+  ss << "pointing pixel: ";
+  if (pixelcapture) {
+    ss << "(" << std::setw(3) << static_cast<int>(mousepointcolors[0] * 255.0f)
+        << ", ";
+    ss << "" << std::setw(3) << static_cast<int>(mousepointcolors[1] * 255.0f)
+        << ", ";
+    ss << "" << std::setw(3) << static_cast<int>(mousepointcolors[2] * 255.0f)
+        << ")";
+  } else {
+    ss << "capturing off";
+  }
+  draw_string(-0.92f, 0.70f,
+              pause ? NoticeFontColor : DefaultFontColor, ss.str());
   ss.str("");
   ss << "rain generation: " << (raingeneration ? "on" : "off");
-  draw_string(-0.92f, 0.70f,
-              raingeneration ? DefaultCharacterColor : NoticeCharacterColor,
+  draw_string(-0.92f, 0.62f,
+              raingeneration ? DefaultFontColor : NoticeFontColor,
               ss.str());
 
   // Draw the how to interfere
   ss.str("");
   ss << "p: pause";
-  draw_string(0.10f, -0.68f, DefaultCharacterColor, ss.str());
+  draw_string(0.0f, -0.60f, DefaultFontColor, ss.str());
   ss.str("");
   ss << "c: clear the screen";
-  draw_string(0.10f, -0.76f, DefaultCharacterColor, ss.str());
+  draw_string(0.0f, -0.68f, DefaultFontColor, ss.str());
   ss.str("");
-  ss << "r: toggle the rain effectivity";
-  draw_string(0.10f, -0.84f, DefaultCharacterColor, ss.str());
+  ss << "r: toggle the rain generation";
+  draw_string(0.0f, -0.76f, DefaultFontColor, ss.str());
+  ss.str("");
+  ss << "t: toggle the pixel capturing";
+  draw_string(0.0f, -0.84f, DefaultFontColor, ss.str());
   ss.str("");
   ss << "b: save as bitmap";
-  draw_string(0.10f, -0.92f, DefaultCharacterColor, ss.str());
+  draw_string(0.0f, -0.92f, DefaultFontColor, ss.str());
 
   // Reflect the screen
   glutSwapBuffers();
@@ -325,7 +364,8 @@ int main(int argc, char** argv) {
   glutDisplayFunc(on_display);
   glutTimerFunc(1000 / FPS, on_timer, 0);
   glutMouseFunc(on_mouse_click);
-  glutMotionFunc(on_mouse_draw);
+  glutMotionFunc(on_mouse_drag);
+  glutPassiveMotionFunc(on_mouse_move);
   glutKeyboardFunc(on_keyboard_input);
 
   // Create the popup menu (to avoid the unused function warning)

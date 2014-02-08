@@ -38,6 +38,7 @@ public:
   virtual void ClearAll();
 
   void SetHeight(int x, int y, float height);
+  float GetHeight(int x, int y) const;
 
 private:
   WaterSurface ws;

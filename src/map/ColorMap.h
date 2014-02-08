@@ -47,11 +47,17 @@ public:
   inline int height() const {
     return height_;
   }
-  inline float pixel(int x, int y, int rgb) {
+  inline float pixel(int x, int y, int rgb) const {
     return pixels_[y][x][rgb];
   }
-  inline void pixel(int x, int y, float (&color)[ColorMap::ColorNum]) {
-    memcpy(pixels_[y][x], color, sizeof(float) * ColorMap::ColorNum);
+  inline void pixel(int x, int y, float (&color)[ColorMap::ColorNum]) const {
+    memcpy(color, pixels_[y][x], sizeof(color));
+  }
+  inline float texturebuf(int x, int y, int rgb) const {
+    return texturebuf_[(x * height_ + y) * ColorNum + rgb];
+  }
+  inline void texturebuf(int x, int y, float (&color)[ColorMap::ColorNum]) const {
+    memcpy(color, &(texturebuf_[(x * height_ + y) * ColorNum]), sizeof(color));
   }
 
 protected:
@@ -64,6 +70,9 @@ protected:
   }
   inline void set_texturebuf(int x, int y, int rgb, float val) {
     texturebuf_[(x * height_ + y) * ColorNum + rgb] = val;
+  }
+  inline void set_texturebuf(int x, int y, const float (&color)[ColorMap::ColorNum]) {
+    memcpy(&(texturebuf_[(x * height_ + y) * ColorNum]), color, sizeof(color));
   }
   inline void set_texturebufflush(bool val) {
     texturebufflush_ = val;
