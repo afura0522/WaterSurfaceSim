@@ -78,11 +78,11 @@ protected:
     texturebufflush_ = val;
   }
 
-  float *pixelbuf_;
 private:
   int width_;
   int height_;
   float ***pixels_;
+  float *pixelbuf_;
   float *texturebuf_;
   bool texturebufflush_;
 };
