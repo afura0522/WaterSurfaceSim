@@ -19,26 +19,22 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __COLORMAPBITMAPMIXIN_H__
-#define __COLORMAPBITMAPMIXIN_H__
+#ifndef __COLORMAPBITMAPEXPORTABLE_H__
+#define __COLORMAPBITMAPEXPORTABLE_H__
 
 class ColorMap;
 
-class ColorMapBitmapMixIn {
+class ColorMapBitmapExportable {
 public:
-  ColorMapBitmapMixIn(ColorMap *const map);
-  virtual ~ColorMapBitmapMixIn();
+  ColorMapBitmapExportable(ColorMap *const map);
+  virtual ~ColorMapBitmapExportable();
 
-  ColorMapBitmapMixIn &operator=(const ColorMapBitmapMixIn &obj);
+  ColorMapBitmapExportable &operator=(const ColorMapBitmapExportable &obj);
 
-  void InitializeBitmapMixIn();
-  void FinalizeBitmapMixIn();
-
-  void OutputBitmap(const char *path);
+  void ExportBitmap(const char *path, char *bitmapbuf);
 
 private:
   ColorMap *const map_;
-  char *bitmapbuf_;
 };
 
-#endif /* __COLORMAPBITMAPMIXIN_H__ */
+#endif /* __COLORMAPBITMAPEXPORTABLE_H__ */

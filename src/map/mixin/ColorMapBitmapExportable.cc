@@ -19,34 +19,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "map/ColorMapBitmapMixIn.h"
+#include "map/mixin/ColorMapBitmapExportable.h"
 
 #include <fstream>
 #include <Windows.h>
 
-#include "ColorMap.h"
+#include "map/ColorMap.h"
 
-ColorMapBitmapMixIn::ColorMapBitmapMixIn(ColorMap * const map)
-    : map_(map),
-      bitmapbuf_(NULL) {
+ColorMapBitmapExportable::ColorMapBitmapExportable(ColorMap * const map)
+    : map_(map) {
 }
 
-ColorMapBitmapMixIn::~ColorMapBitmapMixIn() {
-  FinalizeBitmapMixIn();
+ColorMapBitmapExportable::~ColorMapBitmapExportable() {
 }
 
-void ColorMapBitmapMixIn::InitializeBitmapMixIn() {
-  bitmapbuf_ = new char[map_->width() * map_->height() * map_->ColorNum]();
-}
-
-void ColorMapBitmapMixIn::FinalizeBitmapMixIn() {
-  if (NULL != bitmapbuf_) {
-    delete[] bitmapbuf_;
-    bitmapbuf_ = NULL;
-  }
-}
-
-void ColorMapBitmapMixIn::OutputBitmap(const char *path) {
+void ColorMapBitmapExportable::ExportBitmap(const char *path, char *bitmapbuf) {
   BITMAPFILEHEADER bmpFile;
   bmpFile.bfType = 'MB';
   bmpFile.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER)
@@ -74,13 +61,13 @@ void ColorMapBitmapMixIn::OutputBitmap(const char *path) {
   const float *texture = map_->OutputTexture();
   for (int i = 0; i < map_->width(); ++i) {
     for (int j = 0; j < map_->height(); ++j) {
-      bitmapbuf_[(i + (map_->height() - j - 1) * map_->width()) * 3 + 2] =
+      bitmapbuf[(i + (map_->height() - j - 1) * map_->width()) * 3 + 2] =
           static_cast<char>(texture[(i * map_->width() + j) * 3] * 255.0f);
-      bitmapbuf_[(i + (map_->height() - j - 1) * map_->width()) * 3 + 1] =
+      bitmapbuf[(i + (map_->height() - j - 1) * map_->width()) * 3 + 1] =
           static_cast<char>(texture[(i * map_->width() + j) * 3 + 1] * 255.0f);
-      bitmapbuf_[(i + (map_->height() - j - 1) * map_->width()) * 3] =
+      bitmapbuf[(i + (map_->height() - j - 1) * map_->width()) * 3] =
           static_cast<char>(texture[(i * map_->width() + j) * 3 + 2] * 255.0f);
     }
   }
-  fs.write(bitmapbuf_, map_->width() * map_->height() * map_->ColorNum);
+  fs.write(bitmapbuf, map_->width() * map_->height() * map_->ColorNum);
 }
