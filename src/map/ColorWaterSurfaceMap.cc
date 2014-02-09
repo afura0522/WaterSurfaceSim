@@ -29,56 +29,54 @@ ColorWaterSurfaceMap::ColorWaterSurfaceMap(int width, int height,
                                            float propagation, float attenuation,
                                            const float (&heightrange)[2])
     : ColorMap(width, height),
-      ws_(),
+      wss_(),
       heightrange_() {
   for (int i = 0; i < ColorMap::ColorNum; ++i) {
-    ws_[i] = new WaterSurface(width, height, propagation, attenuation);
+    wss_[i] = new WaterSurface(width, height, propagation, attenuation);
   }
   memcpy(heightrange_, heightrange, sizeof(heightrange));
 }
 
 ColorWaterSurfaceMap::~ColorWaterSurfaceMap() {
   for (int i = 0; i < ColorMap::ColorNum; ++i) {
-    delete ws_[i];
+    delete wss_[i];
   }
 }
 
 void ColorWaterSurfaceMap::Initialize() {
   for (int i = 0; i < ColorMap::ColorNum; ++i) {
-    ws_[i]->Initialize();
+    wss_[i]->Initialize();
   }
 }
 
 void ColorWaterSurfaceMap::Finalize() {
   for (int i = 0; i < ColorMap::ColorNum; ++i) {
-    ws_[i]->Finalize();
+    wss_[i]->Finalize();
   }
 }
 
 void ColorWaterSurfaceMap::Execute() {
   for (int i = 0; i < ColorMap::ColorNum; ++i) {
-    ws_[i]->Execute();
+    wss_[i]->Execute();
   }
 
   // Update the pixel colors
   for (int i = 0; i < height(); ++i) {
     for (int j = 0; j < width(); ++j) {
       for (int k = 0; k < ColorMap::ColorNum; ++k) {
-        float color = (ws_[k]->GetHeight(j, i) - heightrange_[0])
+        float color = (wss_[k]->currheight(j, i) - heightrange_[0])
             / (heightrange_[1] - heightrange_[0]);
-        color = (color > 1.0f) ? 1.0f : (color < 0.0f) ? 0.0f : color;
+        color = max(min(color, 1.0f), 0.0f);
         set_pixel(j, i, k, color);
       }
     }
   }
-
-  set_texturebufflush(true);
 }
 
 void ColorWaterSurfaceMap::ClearAll() {
   ColorMap::ClearAll();
   for (int i = 0; i < ColorMap::ColorNum; ++i) {
-    ws_[i]->ClearAll();
+    wss_[i]->ClearAll();
   }
 }
 
@@ -88,7 +86,7 @@ void ColorWaterSurfaceMap::SetHeight(int x, int y,
   int x_validate = min(max(x, 0), width() - 1);
   int y_validate = min(max(y, 0), height() - 1);
   for (int i = 0; i < ColorMap::ColorNum; ++i) {
-    ws_[i]->SetHeight(x_validate, y_validate, color[i]);
+    wss_[i]->set_currheight(x_validate, y_validate, color[i]);
   }
 }
 
@@ -98,6 +96,6 @@ void ColorWaterSurfaceMap::GetHeight(int x, int y,
   int x_validate = min(max(x, 0), width() - 1);
   int y_validate = min(max(y, 0), height() - 1);
   for (int i = 0; i < ColorMap::ColorNum; ++i) {
-    color[i] = ws_[i]->GetHeight(x_validate, y_validate);
+    color[i] = wss_[i]->currheight(x_validate, y_validate);
   }
 }

@@ -32,8 +32,7 @@ ColorMap::ColorMap(int width, int height)
       height_(height),
       pixels_(),
       pixelbuf_(NULL),
-      texturebuf_(NULL),
-      texturebufflush_(true) {
+      texturebuf_(NULL) {
   pixelbuf_ = new float[width * height * ColorNum]();
   pixels_ = new float**[width]();
   for (int i = 0; i < height; ++i) {
@@ -65,17 +64,23 @@ void ColorMap::ClearAll() {
   memset(pixelbuf_, 0, width() * height() * ColorNum * sizeof(float));
 }
 
-const float *ColorMap::OutputTexture(
-    const float (&basecolor)[ColorMap::ColorNum]) {
-  if (texturebufflush_) {
-    for (int i = 0; i < height(); ++i) {
-      for (int j = 0; j < width(); ++j) {
-        for (int k = 0; k < ColorMap::ColorNum; ++k) {
-          set_texturebuf(j, i, k, basecolor[k] * pixel(j, i, k));
-        }
+void ColorMap::Import(const float *loadbuf) {
+  for (int i = 0; i < height(); ++i) {
+    for (int j = 0; j < width(); ++j) {
+      for (int k = 0; k < ColorMap::ColorNum; ++k) {
+        set_pixel(j, i, k, loadbuf[(j * height_ + i) * ColorNum + k]);
       }
     }
-    texturebufflush_ = false;
+  }
+}
+
+const float *ColorMap::Export(const float (&basecolor)[ColorMap::ColorNum]) {
+  for (int i = 0; i < height(); ++i) {
+    for (int j = 0; j < width(); ++j) {
+      for (int k = 0; k < ColorMap::ColorNum; ++k) {
+        set_texturebuf(j, i, k, basecolor[k] * pixel(j, i, k));
+      }
+    }
   }
   return texturebuf_;
 }

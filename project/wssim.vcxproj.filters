@@ -51,6 +51,9 @@
     <ClCompile Include="..\src\map\mixin\ColorMapBitmapExportable.cc">
       <Filter>src\map\mixin</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\map\mixin\ColorMapBitmapImportable.cc">
+      <Filter>src\map\mixin</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\util\FPSCounter.h">
@@ -78,6 +81,9 @@
       <Filter>src\generator</Filter>
     </ClInclude>
     <ClInclude Include="..\src\map\mixin\ColorMapBitmapExportable.h">
+      <Filter>src\map\mixin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\map\mixin\ColorMapBitmapImportable.h">
       <Filter>src\map\mixin</Filter>
     </ClInclude>
   </ItemGroup>

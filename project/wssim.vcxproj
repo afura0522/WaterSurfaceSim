@@ -25,6 +25,7 @@
     <ClCompile Include="..\src\map\ColorMap.cc" />
     <ClCompile Include="..\src\map\ColorWaterSurfaceMap.cc" />
     <ClCompile Include="..\src\map\mixin\ColorMapBitmapExportable.cc" />
+    <ClCompile Include="..\src\map\mixin\ColorMapBitmapImportable.cc" />
     <ClCompile Include="..\src\map\WaterSurfaceMap.cc" />
     <ClCompile Include="..\src\mechanism\WaterSurface.cc" />
     <ClCompile Include="..\src\util\FPSCounter.cc" />
@@ -37,6 +38,7 @@
     <ClInclude Include="..\src\map\ColorMap.h" />
     <ClInclude Include="..\src\map\ColorWaterSurfaceMap.h" />
     <ClInclude Include="..\src\map\mixin\ColorMapBitmapExportable.h" />
+    <ClInclude Include="..\src\map\mixin\ColorMapBitmapImportable.h" />
     <ClInclude Include="..\src\map\WaterSurfaceMap.h" />
     <ClInclude Include="..\src\mechanism\WaterSurface.h" />
     <ClInclude Include="..\src\util\FPSCounter.h" />

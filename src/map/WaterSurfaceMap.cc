@@ -28,50 +28,49 @@
 WaterSurfaceMap::WaterSurfaceMap(int width, int height, float propagation,
                                  float attenuation)
     : ColorMap(width, height),
-      ws(width, height, propagation, attenuation) {
+      ws_(width, height, propagation, attenuation) {
 }
 
 WaterSurfaceMap::~WaterSurfaceMap() {
 }
 
 void WaterSurfaceMap::Initialize() {
-  ws.Initialize();
+  ws_.Initialize();
 }
 
 void WaterSurfaceMap::Finalize() {
-  ws.Finalize();
+  ws_.Finalize();
 }
 
 void WaterSurfaceMap::Execute() {
   // êFèÓïÒçXêV
-  ws.Execute();
+  ws_.Execute();
 
   for (int i = 0; i < height(); ++i) {
     for (int j = 0; j < width(); ++j) {
       for (int k = 0; k < ColorMap::ColorNum; ++k) {
-        set_pixel(j, i, k, ws.GetHeight(j, i));
+        set_pixel(j, i, k, ws_.currheight(j, i));
       }
     }
   }
-
-  set_texturebufflush(true);
 }
 
 void WaterSurfaceMap::ClearAll() {
   ColorMap::ClearAll();
-  ws.ClearAll();
+  ws_.ClearAll();
 }
 
 void WaterSurfaceMap::SetHeight(int x, int y, float height) {
   // must validate
   int x_validate = std::min(std::max(x, 0), width() - 1);
   int y_validate = std::min(std::max(y, 0), this->height() - 1);
-  ws.SetHeight(x_validate, y_validate, height);
+  ws_.set_prevheight(x_validate, y_validate, height);
+  ws_.set_currheight(x_validate, y_validate, height);
 }
 
 float WaterSurfaceMap::GetHeight(int x, int y) const {
   // must validate
   int x_validate = std::min(std::max(x, 0), width() - 1);
   int y_validate = std::min(std::max(y, 0), this->height() - 1);
-  return ws.GetHeight(x_validate, y_validate);
+  return ws_.currheight(x_validate, y_validate);
 }

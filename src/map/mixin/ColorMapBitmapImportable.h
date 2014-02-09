@@ -19,35 +19,22 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _COLORWATERSURFACEMAP_H_
-#define _COLORWATERSURFACEMAP_H_
+#ifndef __COLORMAPBITMAPIMPORTABLE_H__
+#define __COLORMAPBITMAPIMPORTABLE_H__
 
-#include "ColorMap.h"
+class ColorMap;
 
-class WaterSurface;
-
-class ColorWaterSurfaceMap : public ColorMap {
+class ColorMapBitmapImportable {
 public:
-  ColorWaterSurfaceMap(int width, int height, float propagation, float attenuation, const float (&heightrange)[2]);
-  virtual ~ColorWaterSurfaceMap();
+  ColorMapBitmapImportable(ColorMap *const map);
+  virtual ~ColorMapBitmapImportable();
 
-  virtual void Initialize();
-  virtual void Finalize();
+  ColorMapBitmapImportable &operator=(const ColorMapBitmapImportable &obj);
 
-  virtual void Execute();
-  virtual void ClearAll();
-
-  void SetHeight(int x, int y, const float (&color)[ColorMap::ColorNum]);
-  void GetHeight(int x, int y, float(&color)[ColorMap::ColorNum]) const;
-
-  inline WaterSurface *const ws(int idx) {return wss_[idx];}
-  inline float heightrange(int idx) const {return heightrange_[idx];}
+  void ImportBitmap(const char *path, char *bitmapbuf);
 
 private:
-
-private:
-  WaterSurface *wss_[ColorMap::ColorNum];
-  float heightrange_[2];
+  ColorMap *const map_;
 };
 
-#endif /* _WATERSURFACEMAP_H_ */
+#endif /* __COLORMAPBITMAPIMPORTABLE_H__ */

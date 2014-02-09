@@ -38,9 +38,10 @@ public:
 
   void SetHeight(int x, int y, float height);
   float GetHeight(int x, int y) const;
+  inline WaterSurface *ws() {return &ws_;}
 
 private:
-  WaterSurface ws;
+  WaterSurface ws_;
 };
 
 #endif /* __WATERSURFACEMAP_H__ */

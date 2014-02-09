@@ -36,9 +36,19 @@
 #include "generator/RainGenerator.h"
 #include "map/ColorWaterSurfaceMap.h"
 #include "map/mixin/ColorMapBitmapExportable.h"
+#include "map/mixin/ColorMapBitmapImportable.h"
+#include "mechanism/WaterSurface.h"
 #include "util/FPSCounter.h"
 
+/**
+ * the macros
+ */
+
 #define UNUSED(_var) (void)_var
+
+/**
+ * the forward declarations
+ */
 
 static int get_time();
 static int on_generation(int x, int y, float force);
@@ -48,13 +58,28 @@ static int on_generation(int x, int y, float force);
  */
 
 class WaterSurfaceSimulatorMap : public ColorWaterSurfaceMap,
-    public ColorMapBitmapExportable {
+    public ColorMapBitmapImportable, public ColorMapBitmapExportable {
  public:
   WaterSurfaceSimulatorMap(int width, int height, float propagation,
                            float attenuation, const float (&heightrange)[2])
       : ColorWaterSurfaceMap(width, height, propagation, attenuation,
                              heightrange),
+        ColorMapBitmapImportable(this),
         ColorMapBitmapExportable(this) {
+  }
+
+  virtual void ImportBitmap(const char *path, char *bitmapbuf) {
+    ColorMapBitmapImportable::ImportBitmap(path, bitmapbuf);
+    for (int i = 0; i < height(); ++i) {
+      for (int j = 0; j < width(); ++j) {
+        for (int k = 0; k < ColorMap::ColorNum; ++k) {
+          float pixel_inverse_normalize = pixel(j, i, k)
+            * (heightrange(1) - heightrange(0)) + heightrange(0);
+          ws(k)->set_prevheight(j, i, pixel_inverse_normalize);
+          ws(k)->set_currheight(j, i, pixel_inverse_normalize);
+        }
+      }
+    }
   }
 };
 
@@ -233,6 +258,9 @@ void on_keyboard_input(unsigned char key, int x, int y) {
     case 'b':
       map.ExportBitmap(BitmapPath, bitmapbuf);
       break;
+    case 'l':
+      map.ImportBitmap(BitmapPath, bitmapbuf);
+      break;
   }
 
   // rain control
@@ -284,7 +312,7 @@ void on_display(void) {
   glLoadIdentity();
 
   // Update the texture
-  const float *texture = map.OutputTexture(WaterSurfaceBaseColor);
+  const float *texture = map.Export(WaterSurfaceBaseColor);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, MapWidth, MapHeight, 0, GL_RGB,
                GL_FLOAT, texture);
 
@@ -343,18 +371,24 @@ void on_display(void) {
   // Draw the how to interfere
   ss.str("");
   ss << "p: pause";
-  draw_string(0.0f, -0.60f, DefaultFontColor, ss.str());
+  draw_string(0.0f, -0.44f, DefaultFontColor, ss.str());
   ss.str("");
   ss << "c: clear the screen";
-  draw_string(0.0f, -0.68f, DefaultFontColor, ss.str());
+  draw_string(0.0f, -0.52f, DefaultFontColor, ss.str());
   ss.str("");
   ss << "r: toggle the rain generation";
-  draw_string(0.0f, -0.76f, DefaultFontColor, ss.str());
+  draw_string(0.0f, -0.60f, DefaultFontColor, ss.str());
   ss.str("");
   ss << "t: toggle the pixel capturing";
-  draw_string(0.0f, -0.84f, DefaultFontColor, ss.str());
+  draw_string(0.0f, -0.68f, DefaultFontColor, ss.str());
   ss.str("");
   ss << "b: save as bitmap";
+  draw_string(0.0f, -0.76f, DefaultFontColor, ss.str());
+  ss.str("");
+  ss << "l: load bitmap to buffer";
+  draw_string(0.0f, -0.84f, DefaultFontColor, ss.str());
+  ss.str("");
+  ss << "w, s, a, d: steer the footprint generation";
   draw_string(0.0f, -0.92f, DefaultFontColor, ss.str());
 
   // Reflect the screen

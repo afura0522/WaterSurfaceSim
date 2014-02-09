@@ -33,6 +33,9 @@ ColorMapBitmapExportable::ColorMapBitmapExportable(ColorMap * const map)
 ColorMapBitmapExportable::~ColorMapBitmapExportable() {
 }
 
+/**
+ * Export the map pixels to the bitmap image
+ */
 void ColorMapBitmapExportable::ExportBitmap(const char *path, char *bitmapbuf) {
   BITMAPFILEHEADER bmpFile;
   bmpFile.bfType = 'MB';
@@ -58,7 +61,7 @@ void ColorMapBitmapExportable::ExportBitmap(const char *path, char *bitmapbuf) {
   std::ofstream fs(std::string(path), std::ios::binary | std::ios::trunc);
   fs.write(reinterpret_cast<const char *>(&bmpFile), sizeof(BITMAPFILEHEADER));
   fs.write(reinterpret_cast<const char *>(&bmpInfo), sizeof(BITMAPINFOHEADER));
-  const float *texture = map_->OutputTexture();
+  const float *texture = map_->Export();
   for (int i = 0; i < map_->width(); ++i) {
     for (int j = 0; j < map_->height(); ++j) {
       bitmapbuf[(i + (map_->height() - j - 1) * map_->width()) * 3 + 2] =
@@ -69,5 +72,6 @@ void ColorMapBitmapExportable::ExportBitmap(const char *path, char *bitmapbuf) {
           static_cast<char>(texture[(i * map_->width() + j) * 3 + 2] * 255.0f);
     }
   }
-  fs.write(bitmapbuf, map_->width() * map_->height() * map_->ColorNum);
+
+  fs.write(bitmapbuf, map_->width() * map_->height() * ColorMap::ColorNum);
 }

@@ -35,8 +35,10 @@ public:
   virtual void Execute();
   virtual void ClearAll();
 
-  inline void SetHeight(int x, int y, float height) {currheights_[y][x] = height;}
-  inline float GetHeight(int x, int y) const {return currheights_[y][x];}
+  inline void set_currheight(int x, int y, float height) {currheights_[y][x] = height;}
+  inline float currheight(int x, int y) const {return currheights_[y][x];}
+  inline void set_prevheight(int x, int y, float height) {prevheights_[y][x] = height;}
+  inline float prevheight(int x, int y) const {return prevheights_[y][x];}
 
 private:
   int width_;

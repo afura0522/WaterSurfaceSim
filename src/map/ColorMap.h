@@ -38,7 +38,8 @@ public:
   virtual void Execute() = 0;
 
   virtual void ClearAll();
-  virtual const float *OutputTexture(const float (&basecolor)[ColorNum] = WhiteColor);
+  virtual void Import(const float *loadbuf);
+  virtual const float *Export(const float (&basecolor)[ColorNum] = WhiteColor);
 
   // accessor
   inline int width() const {
@@ -74,9 +75,6 @@ protected:
   inline void set_texturebuf(int x, int y, const float (&color)[ColorMap::ColorNum]) {
     memcpy(&(texturebuf_[(x * height_ + y) * ColorNum]), color, sizeof(color));
   }
-  inline void set_texturebufflush(bool val) {
-    texturebufflush_ = val;
-  }
 
 private:
   int width_;
@@ -84,7 +82,6 @@ private:
   float ***pixels_;
   float *pixelbuf_;
   float *texturebuf_;
-  bool texturebufflush_;
 };
 
 #endif /* WATERSURFACESIM_COLORMAP_H_ */
