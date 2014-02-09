@@ -23,10 +23,9 @@
 #define __WATERSURFACEMAP_H__
 
 #include "map/ColorMap.h"
-#include "map/ColorMapBitmapMixIn.h"
 #include "mechanism/WaterSurface.h"
 
-class WaterSurfaceMap : public ColorMap, public ColorMapBitmapMixIn {
+class WaterSurfaceMap : public ColorMap {
 public:
   WaterSurfaceMap(int width, int height, float propagation, float attenuation);
   virtual ~WaterSurfaceMap();

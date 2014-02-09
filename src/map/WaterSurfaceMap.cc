@@ -28,7 +28,6 @@
 WaterSurfaceMap::WaterSurfaceMap(int width, int height, float propagation,
                                  float attenuation)
     : ColorMap(width, height),
-      ColorMapBitmapMixIn(this),
       ws(width, height, propagation, attenuation) {
 }
 
@@ -37,11 +36,9 @@ WaterSurfaceMap::~WaterSurfaceMap() {
 
 void WaterSurfaceMap::Initialize() {
   ws.Initialize();
-  InitializeBitmapMixIn();
 }
 
 void WaterSurfaceMap::Finalize() {
-  FinalizeBitmapMixIn();
   ws.Finalize();
 }
 

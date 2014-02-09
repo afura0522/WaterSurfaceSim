@@ -35,12 +35,28 @@
 #include "generator/FootprintGenerator.h"
 #include "generator/RainGenerator.h"
 #include "map/ColorWaterSurfaceMap.h"
+#include "map/mixin/ColorMapBitmapExportable.h"
 #include "util/FPSCounter.h"
 
 #define UNUSED(_var) (void)_var
 
 static int get_time();
 static int on_generation(int x, int y, float force);
+
+/**
+ * the class definition
+ */
+
+class WaterSurfaceSimulatorMap : public ColorWaterSurfaceMap,
+    public ColorMapBitmapExportable {
+ public:
+  WaterSurfaceSimulatorMap(int width, int height, float propagation,
+                           float attenuation, const float (&heightrange)[2])
+      : ColorWaterSurfaceMap(width, height, propagation, attenuation,
+                             heightrange),
+        ColorMapBitmapExportable(this) {
+  }
+};
 
 /**
  * the constants
@@ -98,15 +114,16 @@ static const FootprintGenerator::OriginOption FootprintOption(
     FootprintFootWidthFlust);
 
 static FPSCounter fpscounter(1000, get_time);
-static ColorWaterSurfaceMap map(MapWidth, MapHeight, DefaultPropagation,
-                                DefaultAttenuation, WaterHeightRange);
+static WaterSurfaceSimulatorMap map(MapWidth, MapHeight, DefaultPropagation,
+                                    DefaultAttenuation, WaterHeightRange);
 static RainGenerator rain(RainOption, on_generation);
 static FootprintGenerator footprint(FootprintOption, on_generation);
 static bool pause = false;
 static bool raingeneration = true;
 static bool clickstart = false;
 static bool pixelcapture = false;
-static int mousepos[2];
+static int mousepos[2] = { };
+static char *bitmapbuf = NULL;
 
 /**
  * the callback function for FPSCounter
@@ -214,7 +231,7 @@ void on_keyboard_input(unsigned char key, int x, int y) {
       map.ClearAll();
       break;
     case 'b':
-      map.OutputBitmap(BitmapPath);
+      map.ExportBitmap(BitmapPath, bitmapbuf);
       break;
   }
 
@@ -302,8 +319,8 @@ void on_display(void) {
   draw_string(-0.92f, 0.86f, DefaultFontColor, ss.str());
   ss.str("");
   ss << "pause: " << (pause ? "on" : "off");
-  draw_string(-0.92f, 0.78f,
-              pause ? NoticeFontColor : DefaultFontColor, ss.str());
+  draw_string(-0.92f, 0.78f, pause ? NoticeFontColor : DefaultFontColor,
+              ss.str());
   ss.str("");
   ss << "pointing pixel: ";
   if (pixelcapture) {
@@ -316,13 +333,12 @@ void on_display(void) {
   } else {
     ss << "capturing off";
   }
-  draw_string(-0.92f, 0.70f,
-              pause ? NoticeFontColor : DefaultFontColor, ss.str());
+  draw_string(-0.92f, 0.70f, pause ? NoticeFontColor : DefaultFontColor,
+              ss.str());
   ss.str("");
   ss << "rain generation: " << (raingeneration ? "on" : "off");
   draw_string(-0.92f, 0.62f,
-              raingeneration ? DefaultFontColor : NoticeFontColor,
-              ss.str());
+              raingeneration ? DefaultFontColor : NoticeFontColor, ss.str());
 
   // Draw the how to interfere
   ss.str("");
@@ -382,8 +398,14 @@ int main(int argc, char** argv) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
+  // Allocate the buffer
+  bitmapbuf = new char[map.width() * map.height() * ColorMap::ColorNum]();
+
   // Execute the main loop
   glutMainLoop();
+
+  // Release the buffer
+  delete bitmapbuf;
 
   // Release the texture
   glDeleteTextures(1, &texture);

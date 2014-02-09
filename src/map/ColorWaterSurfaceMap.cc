@@ -29,7 +29,6 @@ ColorWaterSurfaceMap::ColorWaterSurfaceMap(int width, int height,
                                            float propagation, float attenuation,
                                            const float (&heightrange)[2])
     : ColorMap(width, height),
-      ColorMapBitmapMixIn(this),
       ws_(),
       heightrange_() {
   for (int i = 0; i < ColorMap::ColorNum; ++i) {
@@ -48,14 +47,12 @@ void ColorWaterSurfaceMap::Initialize() {
   for (int i = 0; i < ColorMap::ColorNum; ++i) {
     ws_[i]->Initialize();
   }
-  InitializeBitmapMixIn();
 }
 
 void ColorWaterSurfaceMap::Finalize() {
   for (int i = 0; i < ColorMap::ColorNum; ++i) {
     ws_[i]->Finalize();
   }
-  FinalizeBitmapMixIn();
 }
 
 void ColorWaterSurfaceMap::Execute() {
